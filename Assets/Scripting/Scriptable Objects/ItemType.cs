@@ -1,13 +1,13 @@
 using UnityEngine;
+using System.Collections.Generic;
 
-public class ItemType : MonoBehaviour
-{
-  public enum Itemtype
+
+  public enum ItemType
     {
         None,
-        SpeedBoost,
-        Points
+        Speed,
+        Points,
         
             
     }
-}
+
