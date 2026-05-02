@@ -1,16 +1,13 @@
 using UnityEngine;
 
-public class ItemData : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+[CreateAssetMenu(fileName = "NewItem",
+    menuName = "Collectible/Item")]
+public class ItemData : ScriptableObject
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+{
+    [SerializeField] private string itemName;
+    [SerializeField] private Sprite icon;
+    [SerializeField] private int value;
+    [SerializeField] private bool isConsumable;
+
 }
