@@ -15,5 +15,5 @@ MonoBehaviour:
   type: 1
   itemName: SpeedBoost
   icon: {fileID: 7742524084409060902, guid: f42176bbc0b84b54e83c161abc6eb071, type: 3}
-  value: 0
+  value: 2
   isConsumable: 1
