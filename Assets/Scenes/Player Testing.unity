@@ -576,6 +576,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 247604423}
+  - component: {fileID: 247604424}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -598,6 +599,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &247604424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247604422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5011485d141776418981d6b2b7250b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
 --- !u!1 &255523706
 GameObject:
   m_ObjectHideFlags: 0
@@ -3226,6 +3239,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &1470163888 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2762777550182273718, guid: 21469a079687a3b4a909449de282a800, type: 3}
+  m_PrefabInstance: {fileID: 5643813499139816935}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1470163893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470163888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a81d754bb1187f3478dc637336896ce4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHeight
 --- !u!1 &1799688565
 GameObject:
   m_ObjectHideFlags: 0
@@ -3970,7 +4000,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2762777550182273718, guid: 21469a079687a3b4a909449de282a800, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1470163893}
   m_SourcePrefab: {fileID: 100100000, guid: 21469a079687a3b4a909449de282a800, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
