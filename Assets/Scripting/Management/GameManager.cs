@@ -1,26 +1,39 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
-    // so this listens to the player's height
-    // connect thru an event
-
-    // i want a timer event here as well
 
     public static event Action<float> OnTimeIncrement;
     private float time = 0;
 
     private float HeighestPointReached = float.MinValue;
 
+    private string CurrentLevel;
+
+    // I could also code it so only one player can unpause the game after they've paused it.
+    [SerializeField] private UnityEvent <bool> OnPauseFlipped;
+    private bool IsPaused = false;
+
+    private void Awake()
+    {
+        // Load in the SOs of checkpoints that I'm gonna make
+        // So no struct haha, SOs
+        // I'll copy paste it tho
+
+
+    }
+
     private void Start()
     {
-        foreach (PlayerHeight ph in PlayerHeight.GetPlayerHeights())
+        // If there is more than one player in the game, the GameManager listens to all of their heights.
+        foreach (PlayerStats ph in PlayerStats.GetPlayerStats())
         {
             ph.OnHeightChange += HeightUpdate;
         }
-        PlayerHeight.OnPlayerHeightAdded += AddPlayerHeight;
-        PlayerHeight.OnPlayerHeightRemoved += RemovePlayerHeight;
+        PlayerStats.OnPlayerStatsAdded += AddPlayerStats;
+        PlayerStats.OnPlayerStatsRemoved += RemovePlayerStats;
     }
 
     private void Update()
@@ -33,12 +46,22 @@ public class GameManager : MonoBehaviour
     {
         HeighestPointReached = (currentHeight > HeighestPointReached) ? currentHeight : HeighestPointReached;
     }
-    private void RemovePlayerHeight(PlayerHeight toRemove)
+    private void RemovePlayerStats(PlayerStats toRemove)
     {
+        toRemove.OnPause -= Pause;
         toRemove.OnHeightChange -= HeightUpdate;
     }
-    private void AddPlayerHeight(PlayerHeight toAdd)
+    private void AddPlayerStats(PlayerStats toAdd)
     {
+        toAdd.OnPause += Pause;
         toAdd.OnHeightChange += HeightUpdate;
     }
+
+    private void Pause()
+    {
+        IsPaused = (IsPaused) ? false : true;
+        OnPauseFlipped.Invoke(IsPaused);
+    }
+    
 }
+

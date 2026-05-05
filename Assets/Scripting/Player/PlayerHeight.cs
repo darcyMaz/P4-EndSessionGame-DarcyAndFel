@@ -1,23 +1,42 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayerHeight : MonoBehaviour
+public class PlayerStats : MonoBehaviour
 {
-    private static List<PlayerHeight> playerHeights = new List<PlayerHeight>();
+    private static List<PlayerStats> playerStats = new List<PlayerStats>();
     
-    public static event Action<PlayerHeight> OnPlayerHeightAdded;
-    public static event Action<PlayerHeight> OnPlayerHeightRemoved;
+    public static event Action<PlayerStats> OnPlayerStatsAdded;
+    public static event Action<PlayerStats> OnPlayerStatsRemoved;
 
     public event Action<float> OnHeightChange;
+    
+    public event Action OnPause;
+    private ProjectActions _actions;
+    private InputAction pause;
+
+    private void Awake()
+    {
+        _actions = new ProjectActions();
+    }
 
     private void OnEnable()
     {
-        playerHeights.Add(this);
+        playerStats.Add(this);
+
+        pause = _actions.Player.Pause;
+        pause.Enable();
+        pause.performed += PauseGame;
+
     }
     private void OnDisable()
     {
-        playerHeights.Remove(this);
+        playerStats.Remove(this);
+
+        pause.Disable();
+        pause.performed -= PauseGame;
     }
 
     private void FixedUpdate()
@@ -25,10 +44,14 @@ public class PlayerHeight : MonoBehaviour
         OnHeightChange?.Invoke(transform.position.y);
     }
 
-    
-    public static IEnumerable<PlayerHeight> GetPlayerHeights()
+    private void PauseGame(InputAction.CallbackContext context)
     {
-        foreach (PlayerHeight item in playerHeights)
+        if (context.performed) OnPause?.Invoke();
+    }
+
+    public static IEnumerable<PlayerStats> GetPlayerStats()
+    {
+        foreach (PlayerStats item in playerStats)
         {
             yield return item;
         }
