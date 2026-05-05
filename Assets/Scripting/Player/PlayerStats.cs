@@ -16,6 +16,9 @@ public class PlayerStats : MonoBehaviour
     private ProjectActions _actions;
     private InputAction pause;
 
+    [SerializeField] private int SpeedBoostStack = 0;
+    [SerializeField] private int MaxSpeedBoost;
+
     private void Awake()
     {
         _actions = new ProjectActions();
@@ -45,9 +48,18 @@ public class PlayerStats : MonoBehaviour
 
     private void PauseGame(InputAction.CallbackContext context)
     {
-        Debug.Log("Gamne paused: Player stats");
-
         if (context.performed) OnPause?.Invoke();
+    }
+
+    public void IncrementSpeedBoost()
+    {
+        SpeedBoostStack = (SpeedBoostStack + 1 < MaxSpeedBoost) ? SpeedBoostStack + 1 : SpeedBoostStack;
+
+    }
+
+    public int GetCurrentSpeedBoost()
+    {
+        return SpeedBoostStack;
     }
 
     public static IEnumerable<PlayerStats> GetPlayerStats()

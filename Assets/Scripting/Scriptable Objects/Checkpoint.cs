@@ -1,11 +1,18 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Checkpoint", menuName = "Checkpoint/Checkpoint")]
-public class Checkpoint : ScriptableObject
+public class Checkpoint : ScriptableObject, IComparable<Checkpoint>
 {
     [SerializeField] private int Level;
     [SerializeField] private Vector3 RespawnPos;
-    [SerializeField] private float Height;
+    [SerializeField] private float HeightTrigger;
+    [SerializeField] private float DistanceTrigger;
+
+    public int CompareTo(Checkpoint other)
+    {
+        return Level - other.GetLevel();
+    }
 
     public int GetLevel()
     {
@@ -15,8 +22,9 @@ public class Checkpoint : ScriptableObject
     {
         return RespawnPos;
     }
-    public float GetHeight()
+    public float[] GetTriggerVals()
     {
-        return Height;
+        float[] vals = { DistanceTrigger, HeightTrigger };
+        return vals;
     }
 }
