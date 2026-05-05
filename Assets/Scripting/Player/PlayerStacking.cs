@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerStacking : MonoBehaviour
 {
-    int stackCount = 0;
+   // int stackCount = 0;
    // SpriteRenderer spriteRenderer;
 
     private void Start()
@@ -17,9 +17,11 @@ public class PlayerStacking : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            stackCount = ++stackCount;
-            Debug.Log($"Collected{stackCount}speed boosts");
-            other.GetComponent<SpriteRenderer>();
+
+            //  Debug.Log($"Collected{stackCount}speed boosts");
+            //  other.GetComponent<SpriteRenderer>();
+            PlayerStats  playerStats = other.GetComponent<PlayerStats>();
+            playerStats.IncrementSpeedBoost();
 
         }
         // add maximum stack capacity logic
