@@ -18,7 +18,7 @@ public class PlayerStacking : MonoBehaviour
         if (other.CompareTag("Player"))
         {
 
-            //  Debug.Log($"Collected{stackCount}speed boosts");
+            // Debug.Log($"Collected{stackCount}speed boosts");
             //  other.GetComponent<SpriteRenderer>();
             PlayerStats  playerStats = other.GetComponent<PlayerStats>();
             playerStats.IncrementSpeedBoost();

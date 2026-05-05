@@ -1143,6 +1143,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2762777550182273718, guid: 21469a079687a3b4a909449de282a800, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1674299503}
+    - targetCorrespondingSourceObject: {fileID: 2762777550182273718, guid: 21469a079687a3b4a909449de282a800, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1674299504}
   m_SourcePrefab: {fileID: 100100000, guid: 21469a079687a3b4a909449de282a800, type: 3}
 --- !u!4 &1674299497 stripped
 Transform:
@@ -1177,6 +1180,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80e4832806e9daa4db2c1bdea96095dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerColor
+  color1: {r: 0.4528302, g: 0.023495909, b: 0.1708143, a: 1}
+  color2: {r: 0.54201585, g: 0, b: 0.6886792, a: 0}
+  color3: {r: 0.0056810933, g: 0, b: 0.3301887, a: 0}
+--- !u!114 &1674299504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445839109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a81d754bb1187f3478dc637336896ce4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  SpeedBoostStack: 0
+  MaxSpeedBoost: 3
 --- !u!1 &2013606436
 GameObject:
   m_ObjectHideFlags: 0

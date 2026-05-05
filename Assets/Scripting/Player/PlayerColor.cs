@@ -5,10 +5,20 @@ public class PlayerColor : MonoBehaviour
 {
     SpriteRenderer sr;
     Color newColor;
+    PlayerStats playerStats;
+    [SerializeField] Color color1;
+    [SerializeField] Color color2;
+    [SerializeField] Color color3;
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-       //newColor = sr.color;
+       playerStats = GetComponent<PlayerStats>();
+        playerStats.OnSpeedBoostIncrement += ChangeColor;
+    }
+
+    private void OnDisable()
+    {
+        playerStats.OnSpeedBoostIncrement -= ChangeColor;
     }
 
 
@@ -18,15 +28,20 @@ public class PlayerColor : MonoBehaviour
     {
         
     }
-    private void OnTriggerEnter2D(Collider2D other)
+    /*   private void OnTriggerEnter2D(Collider2D other)
+       {
+           if (other.CompareTag("SpeedBoost"))
+
+           {
+               sr.color = color1;
+               Debug.Log("test");
+
+           }
+
+       } */
+
+    private void ChangeColor(int SpeedBoostStack)
     {
-        if (other.CompareTag("SpeedBoost"))
-
-        {
-            sr.color = new Color(140, 21, 118);
-            Debug.Log("test");
-            
-        }
-
+        if()
     }
 }

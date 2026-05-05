@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerStats : MonoBehaviour
@@ -16,6 +17,7 @@ public class PlayerStats : MonoBehaviour
     private ProjectActions _actions;
     private InputAction pause;
 
+    public event Action <int>OnSpeedBoostIncrement;
     [SerializeField] private int SpeedBoostStack = 0;
     [SerializeField] private int MaxSpeedBoost;
 
@@ -54,6 +56,7 @@ public class PlayerStats : MonoBehaviour
     public int IncrementSpeedBoost()
     {
         SpeedBoostStack = (SpeedBoostStack + 1 < MaxSpeedBoost) ? SpeedBoostStack + 1 : SpeedBoostStack;
+        OnSpeedBoostIncrement?.Invoke(SpeedBoostStack);
         return SpeedBoostStack;
 
     }
