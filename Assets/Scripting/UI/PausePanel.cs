@@ -6,8 +6,8 @@ public class PausePanel : MonoBehaviour
     private Image panelImg;
     private bool HasImg = false;
 
-    private Color PauseColor = new Color(0, 0, 0, 100);
-    private Color PlayColor = new Color(0, 0, 0, 0);
+    private Color PauseColor = new Color(1, 1, 1, 0.5f);
+    private Color PlayColor = new Color(1, 1, 1, 0);
 
     private void Awake()
     {

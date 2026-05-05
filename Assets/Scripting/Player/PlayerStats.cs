@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -46,6 +45,8 @@ public class PlayerStats : MonoBehaviour
 
     private void PauseGame(InputAction.CallbackContext context)
     {
+        Debug.Log("Gamne paused: Player stats");
+
         if (context.performed) OnPause?.Invoke();
     }
 

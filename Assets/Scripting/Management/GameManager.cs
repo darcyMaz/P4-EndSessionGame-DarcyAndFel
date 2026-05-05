@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
         foreach (PlayerStats ph in PlayerStats.GetPlayerStats())
         {
             ph.OnHeightChange += HeightUpdate;
+            ph.OnPause += Pause;
         }
         PlayerStats.OnPlayerStatsAdded += AddPlayerStats;
         PlayerStats.OnPlayerStatsRemoved += RemovePlayerStats;
