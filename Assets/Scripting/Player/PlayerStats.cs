@@ -51,9 +51,10 @@ public class PlayerStats : MonoBehaviour
         if (context.performed) OnPause?.Invoke();
     }
 
-    public void IncrementSpeedBoost()
+    public int IncrementSpeedBoost()
     {
         SpeedBoostStack = (SpeedBoostStack + 1 < MaxSpeedBoost) ? SpeedBoostStack + 1 : SpeedBoostStack;
+        return SpeedBoostStack;
 
     }
 
