@@ -14,13 +14,13 @@ public class PlayerColor : MonoBehaviour
     {
         sr = GetComponent<SpriteRenderer>();
         playerStats = GetComponent<PlayerStats>();
-        playerStats.OnSpeedBoostIncrement += ChangeColor;
+        playerStats.OnSpeedBoostChange += ChangeColor;
         color0 = sr.color;
     }
 
     private void OnDisable()
     {
-        playerStats.OnSpeedBoostIncrement -= ChangeColor;
+        playerStats.OnSpeedBoostChange -= ChangeColor;
     }
 
 
@@ -44,10 +44,13 @@ public class PlayerColor : MonoBehaviour
 
     private void ChangeColor(int SpeedBoostStack)
     {
-        if (SpeedBoostStack == 1)
+        if (SpeedBoostStack == 0)
+        {
+            sr.color = color0;
+        }
+        else if (SpeedBoostStack == 1)
         {
             sr.color = color1;
-           
         }
         else if (SpeedBoostStack == 2)
         {

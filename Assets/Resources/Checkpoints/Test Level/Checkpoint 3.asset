@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Checkpoint 3
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
   Level: 3
-  RespawnPos: {x: -11.1, y: 15.54, z: 0}
-  HeightTrigger: -9
-  DistanceTrigger: 15
+  RespawnPos: {x: -11.1, y: 15.54}
+  TriggerVals: {x: -10, y: 15}
+  TriggerValsDir: {x: -1, y: 1}

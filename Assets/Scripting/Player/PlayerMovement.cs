@@ -4,6 +4,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // PlayerStats Class
+    private PlayerStats playerStats;
+    private bool HasPlayerStats = false;
+
     // Input Actions
     private ProjectActions actionSystem;
     private InputAction move;
@@ -42,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float JumpFeelCut = 0.5f;
     [SerializeField] float TerminalSpeed = 15f;
     [SerializeField] float FallMultiplier = 2.5f;
-    // [SerializeField] float LowJumpMult = 2f;
+
     private void Awake()
     {
         actionSystem = new ProjectActions();
@@ -63,6 +67,8 @@ public class PlayerMovement : MonoBehaviour
         move.Disable();
         jump.Disable();
         dash.Disable();
+
+        playerStats.OnDeath -= DeathStop;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -71,8 +77,11 @@ public class PlayerMovement : MonoBehaviour
         direction = 1;
 
         if (TryGetComponent(out rb)) { UseRB = true; }
+        if (!TryGetComponent(out playerStats)) Debug.Log("The PlayerMovement script could not find its PlayerStats component.");
+        else HasPlayerStats = true;
 
-        rb = GetComponent<Rigidbody2D>();
+        playerStats.OnDeath += DeathStop;
+
         JumpHeld = false;
         CoyoteTimer = CoyoteTime;
         JumpBufferTimer = JumpBufferTime;
@@ -91,11 +100,6 @@ public class PlayerMovement : MonoBehaviour
         // Making the fall feel heavier goes in the FixedUpdate function as it messes with gravity which is part of the games physics.
         HeavyFall();
         
-    }
-
-    private void Update()
-    {
-
     }
 
     private void Move()
@@ -215,8 +219,6 @@ public class PlayerMovement : MonoBehaviour
 
             JumpHeld = false;
         }
-
-        
     }
 
     private bool isGrounded()
@@ -252,5 +254,10 @@ public class PlayerMovement : MonoBehaviour
         */
 
         if (rb.linearVelocityY <= -TerminalSpeed) rb.linearVelocityY = -TerminalSpeed;
+    }
+
+    private void DeathStop()
+    {
+        rb.linearVelocity = new Vector2(0,0);
     }
 }

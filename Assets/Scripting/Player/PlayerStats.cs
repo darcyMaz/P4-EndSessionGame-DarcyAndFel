@@ -5,19 +5,22 @@ using UnityEngine.InputSystem;
 
 public class PlayerStats : MonoBehaviour
 {
+    // A few things
+    //  So rn it just changes the position and still kinda moves
+    //  I want a "oh no you died!"
+    //  What i would like to do is update the save state as we go and if we die, offer to respawn resets the level as if the save state were loaded in at that.
+
     private static List<PlayerStats> playerStats = new List<PlayerStats>();
     
     public static event Action<PlayerStats> OnPlayerStatsAdded;
     public static event Action<PlayerStats> OnPlayerStatsRemoved;
-
-    // public event Action<Vector2, PlayerStats> OnPosChange;
     
     public event Action OnPause;
     private ProjectActions _actions;
     private InputAction pause;
 
-    public event Action <int> OnSpeedBoostIncrement;
-    [SerializeField] private int SpeedBoostStack = 0;
+    public event Action <int> OnSpeedBoostChange;
+    [SerializeField] private int SpeedBoostLevel = 0;
     [SerializeField] private int MaxSpeedBoost;
 
     public event Action OnDeath;
@@ -72,19 +75,10 @@ public class PlayerStats : MonoBehaviour
         OnCheckpointReached -= SetNextCheckpoint;
     }
 
-    private void FixedUpdate()
-    {
-        // OnPosChange?.Invoke(transform.position, this);
-    }
-
     private void Update()
     {
-        // Check if we reached next checkpoint
-        // reset the player's position to the previous checkpoint
-
         CheckpointCheck();
     }
-
 
     private void PauseGame(InputAction.CallbackContext context)
     {
@@ -93,11 +87,14 @@ public class PlayerStats : MonoBehaviour
 
     private void PlayerDeath()
     {
+        transform.position = LastCheckpointPos;
         OnDeath?.Invoke();
     }
 
     private void CheckpointCheck()
     {
+        if (!HasCheckpoints) return;
+
         Vector2 triggerVals = NextCheckpoint.GetTriggerVals();
         Vector2 triggerValDirs = NextCheckpoint.GetTriggerValsDir();
 
@@ -151,17 +148,16 @@ public class PlayerStats : MonoBehaviour
         else HasCheckpoints = false;
     }
 
-    public int IncrementSpeedBoost()
+    public int ChangeSpeedBoost(int delta)
     {
-        SpeedBoostStack = (SpeedBoostStack + 1 <= MaxSpeedBoost) ? SpeedBoostStack + 1 : SpeedBoostStack;
-        OnSpeedBoostIncrement?.Invoke(SpeedBoostStack);
-        return SpeedBoostStack;
-
+        SpeedBoostLevel = (SpeedBoostLevel + delta > MaxSpeedBoost) ? MaxSpeedBoost : (SpeedBoostLevel + delta < 0) ? 0: SpeedBoostLevel + delta;
+        OnSpeedBoostChange?.Invoke(SpeedBoostLevel);
+        return SpeedBoostLevel;
     }
 
     public int GetCurrentSpeedBoost()
     {
-        return SpeedBoostStack;
+        return SpeedBoostLevel;
     }
 
     public static IEnumerable<PlayerStats> GetPlayerStats()
