@@ -18,10 +18,11 @@ public class PlayerStacking : MonoBehaviour
         if (other.CompareTag("Player"))
         {
 
-            // Debug.Log($"Collected{stackCount}speed boosts");
+             Debug.Log($"Collected speed boost");
             //  other.GetComponent<SpriteRenderer>();
             PlayerStats  playerStats = other.GetComponent<PlayerStats>();
-            playerStats.IncrementSpeedBoost();
+         int currentSpeedBoost =   playerStats.IncrementSpeedBoost();
+            Debug.Log(currentSpeedBoost);
 
         }
         // add maximum stack capacity logic

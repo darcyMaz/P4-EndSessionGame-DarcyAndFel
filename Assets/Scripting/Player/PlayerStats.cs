@@ -55,7 +55,8 @@ public class PlayerStats : MonoBehaviour
 
     public int IncrementSpeedBoost()
     {
-        SpeedBoostStack = (SpeedBoostStack + 1 < MaxSpeedBoost) ? SpeedBoostStack + 1 : SpeedBoostStack;
+        SpeedBoostStack = (SpeedBoostStack + 1 <= MaxSpeedBoost) ? SpeedBoostStack + 1 : SpeedBoostStack;
+        OnSpeedBoostIncrement?.Invoke(SpeedBoostStack);
         return SpeedBoostStack;
 
     }
