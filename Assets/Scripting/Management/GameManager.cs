@@ -11,8 +11,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private string CurrentLevel;
 
-    
-
     private List<Checkpoint> checkpoints;
     private int CheckpointIndex = 0;
     private bool HasCheckpoints = true;
@@ -22,8 +20,6 @@ public class GameManager : MonoBehaviour
     // I could also code it so only one player can unpause the game after they've paused it.
     [SerializeField] private UnityEvent <bool> OnPauseFlipped;
     private bool IsPaused = false;
-
-    
 
     private void Awake()
     {
@@ -85,12 +81,27 @@ public class GameManager : MonoBehaviour
             Vector2 triggerVals = checkpoints[CheckpointIndex].GetTriggerVals();
             Vector2 triggerValDirs = checkpoints[CheckpointIndex].GetTriggerValsDir();
 
-            bool triggerX, triggerY = false;
+            bool triggerX = false, triggerY = false;
 
-            // if (checkpoints[CheckpointIndex].Get)
+            // This isn't necessary is it
+            if (triggerValDirs.x == -1) triggerX = CurrPos.x < triggerVals.x;
+            else if (triggerValDirs.x == 1) triggerX = CurrPos.x > triggerVals.x;
+            else 
+            {
+                Debug.Log("A Checkpoint object had a value other than 1 or -1 in it's triggerValDirs in the x position.");
+                triggerX = false;
+            }
+
+            if (triggerValDirs.y == -1) triggerY = CurrPos.y < triggerVals.y;
+            else if (triggerValDirs.y == 1) triggerY = CurrPos.y > triggerVals.y;
+            else
+            {
+                Debug.Log("A Checkpoint object had a value other than 1 or -1 in it's triggerValDirs in the y position.");
+                triggerY = false;
+            }
 
             // Check if we've reached the next checkpoint.
-            if (CurrPos.y > triggerVals.y && CurrPos.x > triggerVals.x)
+            if (triggerY && triggerX)
             {
                 Debug.Log("checkpoint reached!");
 
