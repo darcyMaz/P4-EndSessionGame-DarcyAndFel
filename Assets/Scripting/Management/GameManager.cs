@@ -49,10 +49,10 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // If there is more than one player in the game, the GameManager listens to all of their heights.
-        foreach (PlayerStats ph in PlayerStats.GetPlayerStats())
+        foreach (PlayerStats ps in PlayerStats.GetPlayerStats())
         {
-            ph.OnPosChange += PosUpdate;
-            ph.OnPause += Pause;
+            ps.OnPosChange += PosUpdate;
+            ps.OnPause += Pause;
         }
         PlayerStats.OnPlayerStatsAdded += AddPlayerStats;
         PlayerStats.OnPlayerStatsRemoved += RemovePlayerStats;
@@ -70,10 +70,9 @@ public class GameManager : MonoBehaviour
 
     private void PosUpdate(Vector2 CurrPos)
     {
-        // HeighestPointReached = (currentHeight > HeighestPointReached) ? currentHeight : HeighestPointReached;
-
-        // Check if we've reached the next checkpoint. X
-        // If we fall below the last threshold, respawn the player.
+        // Check if we've reached the next checkpoint.
+        // This function is called on every FixedUpdate in the player stats script.
+        // More accurately, an event is called for each fixed update representing the change in position.
 
         if (HasCheckpoints)
         {
@@ -83,7 +82,7 @@ public class GameManager : MonoBehaviour
 
             bool triggerX = false, triggerY = false;
 
-            // This isn't necessary is it.
+            // This isn't necessary, is it?
             if (triggerValDirs.x == -1) triggerX = CurrPos.x < triggerVals.x;
             else if (triggerValDirs.x == 1) triggerX = CurrPos.x > triggerVals.x;
             else 
@@ -112,12 +111,6 @@ public class GameManager : MonoBehaviour
             }
             
         }
-
-
-
-        // Check if we've fallen below the previous checkpoint.
-        // if (CurrPos.x < )
-
     }
     private void RemovePlayerStats(PlayerStats toRemove)
     {
