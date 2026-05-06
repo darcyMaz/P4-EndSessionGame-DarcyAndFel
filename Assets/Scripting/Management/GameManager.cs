@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
 
     public static event Action<float> OnTimeIncrement;
     private float time = 0;
@@ -12,17 +13,25 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string CurrentLevel;
 
     private List<Checkpoint> checkpoints;
-    private int CheckpointIndex = 0;
     private bool HasCheckpoints = true;
-    private Vector2 LastCheckpointPos;
     [SerializeField] private UnityEvent<Vector2> OnCheckpointReached;
 
     // I could also code it so only one player can unpause the game after they've paused it.
     [SerializeField] private UnityEvent <bool> OnPauseFlipped;
     private bool IsPaused = false;
 
+    // public event Action <PlayerStats> OnPlayerDeath;
+
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+
         // Load in the SOs of checkpoints that I'm gonna make
         Checkpoint[] checkpoints_arr = Resources.LoadAll<Checkpoint>("Checkpoints/" + CurrentLevel);
 
@@ -46,19 +55,31 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private void OnEnable()
+    {
+        // DeathZone.OnDeath += ;
+    }
+    private void OnDisable()
+    {
+        
+    }
+
     private void Start()
     {
         // If there is more than one player in the game, the GameManager listens to all of their heights.
         foreach (PlayerStats ps in PlayerStats.GetPlayerStats())
         {
-            ps.OnPosChange += PosUpdate;
+            //ps.OnPosChange += PosUpdate;
             ps.OnPause += Pause;
         }
+        // We listen to the addition of removal of players in run time.
         PlayerStats.OnPlayerStatsAdded += AddPlayerStats;
         PlayerStats.OnPlayerStatsRemoved += RemovePlayerStats;
 
         // Set the last checkpoint position to be the startig point of the level.
-        LastCheckpointPos = transform.position;
+        //LastCheckpointPos = transform.position;
+        // Set the reset height to be below the starting position.
+        //ResetHeight = transform.position.y - 5f;
     }
 
     private void Update()
@@ -68,59 +89,15 @@ public class GameManager : MonoBehaviour
         OnTimeIncrement?.Invoke(time);
     }
 
-    private void PosUpdate(Vector2 CurrPos)
-    {
-        // Check if we've reached the next checkpoint.
-        // This function is called on every FixedUpdate in the player stats script.
-        // More accurately, an event is called for each fixed update representing the change in position.
-
-        if (HasCheckpoints)
-        {
-            // Get the values of the next checkpoint.
-            Vector2 triggerVals = checkpoints[CheckpointIndex].GetTriggerVals();
-            Vector2 triggerValDirs = checkpoints[CheckpointIndex].GetTriggerValsDir();
-
-            bool triggerX = false, triggerY = false;
-
-            // This isn't necessary, is it?
-            if (triggerValDirs.x == -1) triggerX = CurrPos.x < triggerVals.x;
-            else if (triggerValDirs.x == 1) triggerX = CurrPos.x > triggerVals.x;
-            else 
-            {
-                Debug.Log("A Checkpoint object had a value other than 1 or -1 in it's triggerValDirs in the x position.");
-                triggerX = false;
-            }
-            if (triggerValDirs.y == -1) triggerY = CurrPos.y < triggerVals.y;
-            else if (triggerValDirs.y == 1) triggerY = CurrPos.y > triggerVals.y;
-            else
-            {
-                Debug.Log("A Checkpoint object had a value other than 1 or -1 in it's triggerValDirs in the y position.");
-                triggerY = false;
-            }
-
-            // Check if we've reached the next checkpoint.
-            if (triggerY && triggerX)
-            {
-                Debug.Log("checkpoint reached!");
-
-                LastCheckpointPos = triggerVals;
-                OnCheckpointReached?.Invoke(checkpoints[CheckpointIndex++].GetRespawnPos());
-
-                // If we've passed the final checkpoint, ignore checkpoints going forward.
-                if (checkpoints.Count == CheckpointIndex) HasCheckpoints = false;
-            }
-            
-        }
-    }
     private void RemovePlayerStats(PlayerStats toRemove)
     {
         toRemove.OnPause -= Pause;
-        toRemove.OnPosChange -= PosUpdate;
+        //toRemove.OnPosChange -= PosUpdate;
     }
     private void AddPlayerStats(PlayerStats toAdd)
     {
         toAdd.OnPause += Pause;
-        toAdd.OnPosChange += PosUpdate;
+        //toAdd.OnPosChange += PosUpdate;
     }
 
     private void Pause()
@@ -128,7 +105,17 @@ public class GameManager : MonoBehaviour
         IsPaused = (IsPaused) ? false : true;
         OnPauseFlipped.Invoke(IsPaused);
     }
+
+    public Checkpoint GetCheckpoint(int index)
+    {
+        return (index < checkpoints.Count) ? checkpoints[index] : null;
+    }
     
+    public bool DoesLevelHaveCheckpoints()
+    {
+        return HasCheckpoints;
+    }
+
     public void SaveAndQuit()
     {
         // save the gamestate into a json utility
