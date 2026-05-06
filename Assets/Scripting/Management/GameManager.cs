@@ -9,18 +9,21 @@ public class GameManager : MonoBehaviour
     public static event Action<float> OnTimeIncrement;
     private float time = 0;
 
-    private float HeighestPointReached = float.MinValue;
-
     [SerializeField] private string CurrentLevel;
 
-    private Queue<Checkpoint> checkpoints;
+    
+
+    private List<Checkpoint> checkpoints;
+    private int CheckpointIndex = 0;
     private bool HasCheckpoints = true;
+    private Vector2 LastCheckpointPos;
+    [SerializeField] private UnityEvent<Vector2> OnCheckpointReached;
 
     // I could also code it so only one player can unpause the game after they've paused it.
     [SerializeField] private UnityEvent <bool> OnPauseFlipped;
     private bool IsPaused = false;
 
-
+    
 
     private void Awake()
     {
@@ -34,10 +37,15 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            checkpoints = new Queue<Checkpoint>();
+            checkpoints = new List<Checkpoint>();
 
-            //List<string> templist = new List<string>();
-            //templist.Sort();
+            foreach (Checkpoint item in checkpoints_arr)
+            {
+                checkpoints.Add(item);
+            }
+
+            checkpoints.Sort();
+            // checkpoints.ForEach(item => { Debug.Log(item.GetLevel()); });
         }
 
     }
@@ -47,32 +55,69 @@ public class GameManager : MonoBehaviour
         // If there is more than one player in the game, the GameManager listens to all of their heights.
         foreach (PlayerStats ph in PlayerStats.GetPlayerStats())
         {
-            ph.OnHeightChange += HeightUpdate;
+            ph.OnPosChange += PosUpdate;
             ph.OnPause += Pause;
         }
         PlayerStats.OnPlayerStatsAdded += AddPlayerStats;
         PlayerStats.OnPlayerStatsRemoved += RemovePlayerStats;
+
+        // Set the last checkpoint position to be the startig point of the level.
+        LastCheckpointPos = transform.position;
     }
 
     private void Update()
     {
+        // Time Event
         time += Time.deltaTime;
         OnTimeIncrement?.Invoke(time);
     }
 
-    private void HeightUpdate(float currentHeight)
+    private void PosUpdate(Vector2 CurrPos)
     {
-        HeighestPointReached = (currentHeight > HeighestPointReached) ? currentHeight : HeighestPointReached;
+        // HeighestPointReached = (currentHeight > HeighestPointReached) ? currentHeight : HeighestPointReached;
+
+        // Check if we've reached the next checkpoint. X
+        // If we fall below the last threshold, respawn the player.
+
+        if (HasCheckpoints)
+        {
+            // Get the values of the next checkpoint.
+            Vector2 triggerVals = checkpoints[CheckpointIndex].GetTriggerVals();
+            Vector2 triggerValDirs = checkpoints[CheckpointIndex].GetTriggerValsDir();
+
+            bool triggerX, triggerY = false;
+
+            // if (checkpoints[CheckpointIndex].Get)
+
+            // Check if we've reached the next checkpoint.
+            if (CurrPos.y > triggerVals.y && CurrPos.x > triggerVals.x)
+            {
+                Debug.Log("checkpoint reached!");
+
+                LastCheckpointPos = triggerVals;
+                OnCheckpointReached?.Invoke(checkpoints[CheckpointIndex++].GetRespawnPos());
+
+                // If we've passed the final checkpoint, ignore checkpoints going forward.
+                if (checkpoints.Count == CheckpointIndex) HasCheckpoints = false;
+            }
+            
+        }
+
+
+
+        // Check if we've fallen below the previous checkpoint.
+        // if (CurrPos.x < )
+
     }
     private void RemovePlayerStats(PlayerStats toRemove)
     {
         toRemove.OnPause -= Pause;
-        toRemove.OnHeightChange -= HeightUpdate;
+        toRemove.OnPosChange -= PosUpdate;
     }
     private void AddPlayerStats(PlayerStats toAdd)
     {
         toAdd.OnPause += Pause;
-        toAdd.OnHeightChange += HeightUpdate;
+        toAdd.OnPosChange += PosUpdate;
     }
 
     private void Pause()

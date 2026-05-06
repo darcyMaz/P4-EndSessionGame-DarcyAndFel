@@ -5,9 +5,9 @@ using UnityEngine;
 public class Checkpoint : ScriptableObject, IComparable<Checkpoint>
 {
     [SerializeField] private int Level;
-    [SerializeField] private Vector3 RespawnPos;
-    [SerializeField] private float HeightTrigger;
-    [SerializeField] private float DistanceTrigger;
+    [SerializeField] private Vector2 RespawnPos;
+    [SerializeField] private Vector2 TriggerVals;
+    [SerializeField] private Vector2 TriggerValsDir;
 
     public int CompareTo(Checkpoint other)
     {
@@ -18,13 +18,16 @@ public class Checkpoint : ScriptableObject, IComparable<Checkpoint>
     {
         return Level;
     }
-    public Vector3 GetRespawnPos()
+    public Vector2 GetRespawnPos()
     {
         return RespawnPos;
     }
-    public float[] GetTriggerVals()
+    public Vector2 GetTriggerVals()
     {
-        float[] vals = { DistanceTrigger, HeightTrigger };
-        return vals;
+        return TriggerVals;
+    }
+    public Vector2 GetTriggerValsDir()
+    {
+        return TriggerValsDir;
     }
 }

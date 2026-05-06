@@ -11,7 +11,7 @@ public class PlayerStats : MonoBehaviour
     public static event Action<PlayerStats> OnPlayerStatsAdded;
     public static event Action<PlayerStats> OnPlayerStatsRemoved;
 
-    public event Action<float> OnHeightChange;
+    public event Action<Vector2> OnPosChange;
     
     public event Action OnPause;
     private ProjectActions _actions;
@@ -45,7 +45,7 @@ public class PlayerStats : MonoBehaviour
 
     private void FixedUpdate()
     {
-        OnHeightChange?.Invoke(transform.position.y);
+        OnPosChange?.Invoke(transform.position);
     }
 
     private void PauseGame(InputAction.CallbackContext context)
@@ -56,7 +56,6 @@ public class PlayerStats : MonoBehaviour
     public int IncrementSpeedBoost()
     {
         SpeedBoostStack = (SpeedBoostStack + 1 < MaxSpeedBoost) ? SpeedBoostStack + 1 : SpeedBoostStack;
-        OnSpeedBoostIncrement?.Invoke(SpeedBoostStack);
         return SpeedBoostStack;
 
     }
