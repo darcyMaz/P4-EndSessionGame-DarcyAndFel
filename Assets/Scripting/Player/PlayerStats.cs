@@ -5,11 +5,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerStats : MonoBehaviour
 {
-    // A few things
-    //  So rn it just changes the position and still kinda moves
-    //  I want a "oh no you died!"
-    //  What i would like to do is update the save state as we go and if we die, offer to respawn resets the level as if the save state were loaded in at that.
-
     private static List<PlayerStats> playerStats = new List<PlayerStats>();
     
     public static event Action<PlayerStats> OnPlayerStatsAdded;
@@ -23,11 +18,12 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private int SpeedBoostLevel = 0;
     [SerializeField] private int MaxSpeedBoost;
 
-    public event Action OnDeath;
+    public event Action <Vector3> OnDeath;
 
     public event Action <int> OnCheckpointReached;
     private Checkpoint NextCheckpoint;
     private bool HasCheckpoints;
+    private bool PassedLastCheckpoint = false;
     private int CheckpointIndex = 0;
     private Vector2 LastCheckpointPos;
     private float ResetHeight;
@@ -46,7 +42,7 @@ public class PlayerStats : MonoBehaviour
         if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints())
         {
             // get the first checkpoint and save it
-            NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex++);
+            NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
         }
 
         // set the reset values to be based on the starting pos
@@ -87,8 +83,8 @@ public class PlayerStats : MonoBehaviour
 
     private void PlayerDeath()
     {
-        transform.position = LastCheckpointPos;
-        OnDeath?.Invoke();
+        // transform.position = LastCheckpointPos;
+        OnDeath?.Invoke(LastCheckpointPos);
     }
 
     private void CheckpointCheck()
@@ -100,20 +96,31 @@ public class PlayerStats : MonoBehaviour
 
         bool triggerX = false, triggerY = false;
 
-        // This code checks whether the checkpoint has been passed, but we need to clarify in which direction the player needs to pass.
-        if (triggerValDirs.x == -1) triggerX = transform.position.x < triggerVals.x;
-        else if (triggerValDirs.x == 1) triggerX = transform.position.x > triggerVals.x;
-        else
+        // If we passed the last checkpoint then we don't want to check whether we passed
+        //      the nonexistant next checkpoint.
+        if (!PassedLastCheckpoint)
         {
-            Debug.Log("A Checkpoint object had a value other than 1 or -1 in it's triggerValDirs in the x position.");
-            triggerX = false;
+            // This code checks whether the checkpoint has been passed, but we need to clarify in which direction the player needs to pass.
+            if (triggerValDirs.x == -1) triggerX = transform.position.x < triggerVals.x;
+            else if (triggerValDirs.x == 1) triggerX = transform.position.x > triggerVals.x;
+            else
+            {
+                Debug.Log("A Checkpoint object had a value other than 1 or -1 in it's triggerValDirs in the x position.");
+                triggerX = false;
+            }
+            if (triggerValDirs.y == -1) triggerY = transform.position.y < triggerVals.y;
+            else if (triggerValDirs.y == 1) triggerY = transform.position.y > triggerVals.y;
+            else
+            {
+                Debug.Log("A Checkpoint object had a value other than 1 or -1 in it's triggerValDirs in the y position.");
+                triggerY = false;
+            }
         }
-        if (triggerValDirs.y == -1) triggerY = transform.position.y < triggerVals.y;
-        else if (triggerValDirs.y == 1) triggerY = transform.position.y > triggerVals.y;
+        // This can be the spot to check if we have reached the end.
         else
         {
-            Debug.Log("A Checkpoint object had a value other than 1 or -1 in it's triggerValDirs in the y position.");
-            triggerY = false;
+            ReachedEndCheck();
+            return;
         }
 
         // Check if we've reached the next checkpoint.
@@ -121,11 +128,11 @@ public class PlayerStats : MonoBehaviour
         {
             Debug.Log("checkpoint reached!");
 
-            LastCheckpointPos = triggerVals;
+            LastCheckpointPos = NextCheckpoint.GetRespawnPos();
             ResetHeight = triggerVals.y;
             OnCheckpointReached?.Invoke(CheckpointIndex++);
         }
-        // In the case where we haven't reached the next checkpoint, which is almost all the time.
+        // In the case where we haven't reached the next checkpoint (which is almost all the time)...
         else
         {
             // Check if we have gone below the threshold of the previous checkpoint.
@@ -142,10 +149,16 @@ public class PlayerStats : MonoBehaviour
 
     private void SetNextCheckpoint(int index)
     {
+        Debug.Log(index);
         Checkpoint nextCheckpoint = GameManager.Instance.GetCheckpoint(index);
 
         if (nextCheckpoint != null) NextCheckpoint = nextCheckpoint;
-        else HasCheckpoints = false;
+        else { PassedLastCheckpoint = true; Debug.Log("Last checkpoint passed - player stats"); }
+    }
+
+    private void ReachedEndCheck()
+    {
+        Debug.Log("Checking if we've reached the end - player stats");
     }
 
     public int ChangeSpeedBoost(int delta)

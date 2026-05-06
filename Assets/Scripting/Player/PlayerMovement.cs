@@ -8,6 +8,13 @@ public class PlayerMovement : MonoBehaviour
     private PlayerStats playerStats;
     private bool HasPlayerStats = false;
 
+    // Death Vars
+    private bool IsDead = false;
+    private BoxCollider2D playerCollider;
+    private bool HasCollider = false;
+    private Vector3 Checkpoint;
+    [SerializeField] private float DeathRespawnSpeed = 0.3f;
+
     // Input Actions
     private ProjectActions actionSystem;
     private InputAction move;
@@ -68,24 +75,31 @@ public class PlayerMovement : MonoBehaviour
         jump.Disable();
         dash.Disable();
 
-        playerStats.OnDeath -= DeathStop;
+        if (HasPlayerStats) playerStats.OnDeath -= Death;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        direction = 1;
-
-        if (TryGetComponent(out rb)) { UseRB = true; }
+        
+        if (!TryGetComponent(out rb)) Debug.Log("The PlayerMovement component could not find its RigidBody2D.");
+        else { UseRB = true; }
+        
         if (!TryGetComponent(out playerStats)) Debug.Log("The PlayerMovement script could not find its PlayerStats component.");
         else HasPlayerStats = true;
 
-        playerStats.OnDeath += DeathStop;
+        if (!TryGetComponent(out playerCollider)) Debug.Log("The PlayerMovement component could not find its Collider2D.");
+        else HasCollider = true;
+
+        if (HasPlayerStats) playerStats.OnDeath += Death;
+        Checkpoint = transform.position;
 
         JumpHeld = false;
         CoyoteTimer = CoyoteTime;
         JumpBufferTimer = JumpBufferTime;
         Jumping = false;
+
+        direction = 1;
     }
 
     // Update is called once per frame
@@ -93,6 +107,12 @@ public class PlayerMovement : MonoBehaviour
     {
         // If we never found the RigidBody2D then we can't do any movement.
         if (!UseRB) return;
+
+        if (IsDead)
+        {
+            MoveTowardCheckpoint();
+            return;
+        }
 
         Move();
         // If Jump is in the Update function, then the IsGrounded check does not work properly.
@@ -256,8 +276,39 @@ public class PlayerMovement : MonoBehaviour
         if (rb.linearVelocityY <= -TerminalSpeed) rb.linearVelocityY = -TerminalSpeed;
     }
 
-    private void DeathStop()
+    private void Death(Vector3 aCheckpoint)
     {
-        rb.linearVelocity = new Vector2(0,0);
+        // Stop the player totally.
+        rb.linearVelocity = new Vector3(0, 0, 0);
+        rb.angularVelocity = 0;
+        rb.gravityScale = 0;
+        currentSpeed = 0;
+
+        if (!HasCollider)
+        {
+            // If we can't adjust the collider properly, then just directly send the player to the checkpoint.
+            transform.position = aCheckpoint;
+            rb.gravityScale = 1;
+            return;
+        }
+
+        Checkpoint = aCheckpoint;
+        IsDead = true;
+        playerCollider.enabled = false;
+        rb.excludeLayers = ~0;
+    }
+    private void MoveTowardCheckpoint()
+    {
+        rb.transform.position = Vector2.MoveTowards(rb.transform.position, Checkpoint, DeathRespawnSpeed);
+
+        // When the player reaches the checkpoint on respawn.
+        // I probably want to change this so it has some tolerance.
+        if (rb.transform.position == Checkpoint)
+        {
+            playerCollider.enabled = true;
+            rb.gravityScale = 1;
+            rb.excludeLayers = 0;
+            IsDead = false;
+        }
     }
 }
