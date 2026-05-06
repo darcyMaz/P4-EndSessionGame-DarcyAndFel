@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
 
             bool triggerX = false, triggerY = false;
 
-            // This isn't necessary is it
+            // This isn't necessary is it.
             if (triggerValDirs.x == -1) triggerX = CurrPos.x < triggerVals.x;
             else if (triggerValDirs.x == 1) triggerX = CurrPos.x > triggerVals.x;
             else 
@@ -91,7 +91,6 @@ public class GameManager : MonoBehaviour
                 Debug.Log("A Checkpoint object had a value other than 1 or -1 in it's triggerValDirs in the x position.");
                 triggerX = false;
             }
-
             if (triggerValDirs.y == -1) triggerY = CurrPos.y < triggerVals.y;
             else if (triggerValDirs.y == 1) triggerY = CurrPos.y > triggerVals.y;
             else
