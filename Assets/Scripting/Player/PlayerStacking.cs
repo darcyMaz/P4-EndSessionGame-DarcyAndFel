@@ -23,6 +23,7 @@ public class PlayerStacking : MonoBehaviour
             PlayerStats  playerStats = other.GetComponent<PlayerStats>();
             int currentSpeedBoost = playerStats.ChangeSpeedBoost(1);
             Debug.Log(currentSpeedBoost);
+            Destroy(gameObject);
 
         }
         // add maximum stack capacity logic

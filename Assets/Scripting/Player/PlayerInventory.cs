@@ -7,8 +7,7 @@ public class PlayerInventory : MonoBehaviour
 {
     // inspector setup
     [Header("Settings")]
-    // is there a maximum of how many speed boosts can be active at once or do they just stack forever?
-    // setting max at 5 for all collectibles for now
+   
     [SerializeField] private int maxCapacity = 5;
 
     [Header("Events")]
