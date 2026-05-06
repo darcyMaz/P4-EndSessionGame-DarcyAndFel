@@ -796,6 +796,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlusFive
       objectReference: {fileID: 0}
+    - target: {fileID: 4353324303044086455, guid: 89167e2a24496574a96a39b81158ef6f, type: 3}
+      propertyPath: m_TagString
+      value: PlusFive
+      objectReference: {fileID: 0}
     - target: {fileID: 8572346714799237078, guid: 89167e2a24496574a96a39b81158ef6f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.23
@@ -907,6 +911,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2698974932467426526, guid: 31ae1c8927ac584459cf55f45678a185, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 64.030495
+      objectReference: {fileID: 0}
+    - target: {fileID: 2698974932467426526, guid: 31ae1c8927ac584459cf55f45678a185, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 5.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 2698974932467426526, guid: 31ae1c8927ac584459cf55f45678a185, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 5.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 2698974932467426526, guid: 31ae1c8927ac584459cf55f45678a185, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.41
       objectReference: {fileID: 0}
@@ -946,6 +962,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2698974932467426526, guid: 31ae1c8927ac584459cf55f45678a185, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2748126558050094711, guid: 31ae1c8927ac584459cf55f45678a185, type: 3}
       propertyPath: m_Name
       value: Ground
@@ -965,6 +985,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5275447546225506807, guid: 724d3e85432137941ac7461bd0705c4c, type: 3}
       propertyPath: m_Name
+      value: PlusTen
+      objectReference: {fileID: 0}
+    - target: {fileID: 5275447546225506807, guid: 724d3e85432137941ac7461bd0705c4c, type: 3}
+      propertyPath: m_TagString
       value: PlusTen
       objectReference: {fileID: 0}
     - target: {fileID: 6853914803021699929, guid: 724d3e85432137941ac7461bd0705c4c, type: 3}
