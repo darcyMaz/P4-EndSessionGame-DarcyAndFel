@@ -14,6 +14,8 @@ public class MainMenuManager : MonoBehaviour
     public void DeleteSaveData()
     {
         // Remove all the files in the persistant path folder.
-        Debug.Log("Delete save data pressed. Not implemented.");
+        SaveManager.Instance.DeleteAllSaveData();
+        
+        //Debug.Log("Delete save data pressed. Not implemented.");
     }
 }

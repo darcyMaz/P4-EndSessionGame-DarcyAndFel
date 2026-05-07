@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     private bool IsPaused = false;
 
     public event Action OnSaveAndQuit;
+    public event Action OnResetLevel;
 
     private void Awake()
     {
@@ -30,6 +31,9 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        // Check to see if this level has a folder for persistant file saving.
+        SaveManager.Instance.TryMakeLevelDir(CurrentLevel);
 
         // Checkpoints as SOs
         Checkpoint[] checkpoints_arr = Resources.LoadAll<Checkpoint>("Checkpoints/" + CurrentLevel);
@@ -117,6 +121,11 @@ public class GameManager : MonoBehaviour
         return HasCheckpoints;
     }
 
+    public int HowManyCheckpoints()
+    {
+        return checkpoints.Count;
+    }
+
     public string GetLevelName()
     {
         return CurrentLevel;
@@ -125,23 +134,17 @@ public class GameManager : MonoBehaviour
 
     public void SaveAndQuit()
     {
-        // save the gamestate into a json utility
-        // save the last checkpoint basically
-
-        // and then go to the main menu
-
-
         Pause();
         OnSaveAndQuit?.Invoke();
         SceneManager.Instance.BufferSceneChange("Main Menu");
-
-        // Debug.Log("SaveAndQuit() called: GameManager");
     }
 
     public void ResetLevel()
     {
-        Debug.Log("Reset level: GM");
-        // call scene manager, buffer the current level
+        Pause();
+        OnResetLevel?.Invoke();
+        SaveManager.Instance.DeleteLevelSaveData(CurrentLevel);
+        SceneManager.Instance.BufferSceneChange(CurrentLevel);
     }
 }
 

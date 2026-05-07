@@ -88,21 +88,35 @@ public class PlayerStats : MonoBehaviour
             if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints())
             {
                 CheckpointIndex = psd.GetCheckpointNum();
-                NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
-                
-                if (NextCheckpoint == null)
-                {
-                    Debug.Log("The PlayerStats script tried to get a Checkpoint, but the CheckpointIndex was out of bounds when it shouldn't have been.");
-                    HasCheckpoints = false;
 
-                    LastCheckpointPos = transform.position;
-                    ResetHeight = transform.position.y - 5f; // A little lower than the start pos.
+                // If the loaded data indicates we've pass the last checkpoint
+                if (CheckpointIndex == GameManager.Instance.HowManyCheckpoints())
+                {
+                    Debug.Log("PlayerStats loaded a save file where the player passed the last checkpoint but did not finish the game.");
+                    PassedLastCheckpoint = true;
+                    LastCheckpointPos = GameManager.Instance.GetCheckpoint(GameManager.Instance.HowManyCheckpoints() - 1).GetRespawnPos();
+                    ResetHeight = GameManager.Instance.GetCheckpoint(GameManager.Instance.HowManyCheckpoints() - 1).GetTriggerVals().y;
                 }
                 else
                 {
-                    ResetHeight = GameManager.Instance.GetCheckpoint(psd.GetCheckpointNum() - 1).GetTriggerVals().y;
-                    LastCheckpointPos = psd.GetCheckpointPos();
+                    NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
+
+                    // If, for some unknown reason, the checkpoint could not be loaded.
+                    if (NextCheckpoint == null)
+                    {
+                        Debug.Log("The PlayerStats script tried to get a Checkpoint, but the CheckpointIndex was out of bounds when it shouldn't have been.");
+                        HasCheckpoints = false;
+
+                        LastCheckpointPos = transform.position;
+                        ResetHeight = transform.position.y - 5f; // A little lower than the start pos.
+                    }
+                    else
+                    {
+                        ResetHeight = GameManager.Instance.GetCheckpoint(psd.GetCheckpointNum() - 1).GetTriggerVals().y;
+                        LastCheckpointPos = psd.GetCheckpointPos();
+                    }
                 }
+                
             }
             else
             {
@@ -175,6 +189,8 @@ public class PlayerStats : MonoBehaviour
         {
             // Debug.Log("No checkpoints in front: PlayerStats");
             ReachedEndCheck();
+
+            Debug.Log("Check reset height: " + transform.position.y + " < " + ResetHeight);
 
             // If we've fallen below the reset height.
             if (transform.position.y < ResetHeight)
