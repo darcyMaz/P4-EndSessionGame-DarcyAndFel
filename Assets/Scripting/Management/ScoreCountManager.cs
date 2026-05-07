@@ -9,10 +9,6 @@ public class ScoreCountManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI InventoryScore;
     [SerializeField] private TextMeshProUGUI TotalScore;
 
-    [SerializeField] private string temp;
-
-    public string temp1;
-
     private void Start()
     {
         //OnCountScore?.Invoke();

@@ -155,11 +155,13 @@ public class GameManager : MonoBehaviour
         GameObject ScoreCountGO_Clone = Instantiate(ScoreCountGO);
 
         ScoreCount sc;
-        if (!TryGetComponent(out sc)) Debug.Log("The ScoreCountGO prefab did nto have its ScoreCount component. The score may not be tallied.");
+        if (!ScoreCountGO_Clone.TryGetComponent(out sc)) Debug.Log("The ScoreCountGO prefab did not have its ScoreCount component. The score may not be tallied.");
         else
         {
-            sc.SetVals(time, inventoryScore);
+            sc.SetVals(time, inventoryScore, GetLevelName());
         }
+
+
 
         SceneManager.Instance.BufferSceneChange("Score Count");
     }

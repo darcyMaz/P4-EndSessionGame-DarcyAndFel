@@ -13,6 +13,9 @@ GameObject:
   - component: {fileID: 8149263235711902834}
   - component: {fileID: 5844998601995612870}
   - component: {fileID: 7367487078322920311}
+  - component: {fileID: 4425842446260078806}
+  - component: {fileID: 1467137126666347893}
+  - component: {fileID: 7452433572474489942}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -180,6 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94775fe752eaf994ba8f396223866e18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  DeathRespawnSpeed: 0.3
   movementSpeed: 6
   movementAcceleration: 6
   minSpeed: 0.05
@@ -195,6 +199,52 @@ MonoBehaviour:
   JumpFeelCut: 0.5
   TerminalSpeed: 15
   FallMultiplier: 2.5
+--- !u!114 &4425842446260078806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2762777550182273718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a81d754bb1187f3478dc637336896ce4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  SpeedBoostLevel: 0
+  MaxSpeedBoost: 3
+--- !u!114 &1467137126666347893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2762777550182273718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80e4832806e9daa4db2c1bdea96095dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerColor
+  color0: {r: 0, g: 0, b: 0, a: 0}
+  color1: {r: 0, g: 0, b: 0, a: 0}
+  color2: {r: 0, g: 0, b: 0, a: 0}
+  color3: {r: 0, g: 0, b: 0, a: 0}
+--- !u!114 &7452433572474489942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2762777550182273718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b08958af1a806014cba4a5b0c6b03d70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  maxCapacity: 5
+  onInventoryChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3696758653735067269
 GameObject:
   m_ObjectHideFlags: 0

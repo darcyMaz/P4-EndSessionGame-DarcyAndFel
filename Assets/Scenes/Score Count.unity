@@ -479,6 +479,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 316024497}
+  - component: {fileID: 316024498}
   m_Layer: 0
   m_Name: ScoreCountManager
   m_TagString: Untagged
@@ -501,6 +502,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &316024498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316024495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28d87b426d382804d9d41c75c43ffec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreCountManager
+  LevelName: {fileID: 1313176992}
+  Time: {fileID: 678085427}
+  TimeScore: {fileID: 1880838277}
+  InventoryScore: {fileID: 501179074}
+  TotalScore: {fileID: 20346455}
 --- !u!1 &441764590
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,7 +960,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -44.858765, y: 0, z: -58.316406, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1392,9 +1410,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 316024495}
-        m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 316024498}
+        m_TargetAssemblyTypeName: ScoreCountManager, Assembly-CSharp
+        m_MethodName: Quit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1666,7 +1684,7 @@ GameObject:
   - component: {fileID: 1313176993}
   - component: {fileID: 1313176992}
   m_Layer: 5
-  m_Name: Timer Title (1)
+  m_Name: Level Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1821,8 +1839,8 @@ RectTransform:
   m_LocalScale: {x: 0.45444608, y: 0.59134007, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1691398642}
   - {fileID: 1313176991}
+  - {fileID: 1691398642}
   - {fileID: 678085426}
   - {fileID: 1880838276}
   - {fileID: 1118638686}
@@ -2034,10 +2052,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 316024495}
-        m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 5
+      - m_Target: {fileID: 316024498}
+        m_TargetAssemblyTypeName: ScoreCountManager, Assembly-CSharp
+        m_MethodName: MainMenu
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2532,9 +2550,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 316024495}
-        m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 316024498}
+        m_TargetAssemblyTypeName: ScoreCountManager, Assembly-CSharp
+        m_MethodName: RestartLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
