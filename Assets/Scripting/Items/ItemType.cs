@@ -7,7 +7,5 @@ using System.Collections.Generic;
         None,
         Speed,
         Points,
-        
-            
     }
 

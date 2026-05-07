@@ -19,7 +19,10 @@ public class PlayerStats : MonoBehaviour
     // Speed boost
     public event Action <int> OnSpeedBoostChange;
     [SerializeField] private int SpeedBoostLevel = 0;
+    private Dictionary<int, float> SpeedBoosts = new Dictionary<int, float>();
     [SerializeField] private int MaxSpeedBoost;
+    [SerializeField] private float SpeedBoostTime = 4;
+    private float SpeedBoostTimer;
 
     // Death
     public event Action <Vector3> OnDeath;
@@ -75,6 +78,10 @@ public class PlayerStats : MonoBehaviour
 
     private void Start()
     {
+        SpeedBoosts.Add(0, 1);
+        SpeedBoosts.Add(1, 1.2f);
+        SpeedBoosts.Add(2, 1.4f);
+
         if (!TryGetComponent(out inventory)) Debug.Log("The PlayerStats component could not find its PlayerInventory ");
         else
         {
@@ -174,8 +181,7 @@ public class PlayerStats : MonoBehaviour
 
     private void Update()
     {
-        // Debug.Log(CheckpointIndex);
-
+        
         CheckpointCheck();
     }
 
@@ -306,8 +312,10 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    private void InventoryChanged()
+    private void InventoryChanged(ItemType it)
     {
+        if (it == ItemType.Speed) ChangeSpeedBoost(1);
+
         OnInventoryChange?.Invoke(inventory);
     }
 
@@ -318,9 +326,13 @@ public class PlayerStats : MonoBehaviour
         return SpeedBoostLevel;
     }
 
-    public int GetCurrentSpeedBoost()
+    public float GetCurrentSpeedBoost()
     {
-        return SpeedBoostLevel;
+        float toReturn;
+        SpeedBoosts.TryGetValue(SpeedBoostLevel, out toReturn);
+
+        if (toReturn <= 0) return 1;
+        else return toReturn;
     }
 
     public static IEnumerable<PlayerStats> GetPlayerStats()

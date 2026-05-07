@@ -16,6 +16,6 @@ public class ItemData : ScriptableObject
     public string ItemName() { return itemName; }
     public Sprite Icon() { return icon; }
     public int Value() { return value; }
-    
+    public bool IsConsumable() { return isConsumable; }
 
 }

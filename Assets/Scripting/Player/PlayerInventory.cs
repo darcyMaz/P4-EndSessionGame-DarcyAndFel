@@ -10,7 +10,7 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private int maxCapacity = 5;
 
     // [Header("Events")]
-    public event Action onInventoryChanged;
+    public event Action <ItemType> onInventoryChanged;
     
     // private state
     private List<ItemData> heldItems;
@@ -34,7 +34,7 @@ public class PlayerInventory : MonoBehaviour
             return false;
         }
         heldItems.Add(type);
-        onInventoryChanged.Invoke();
+        onInventoryChanged.Invoke(ItemType.None);
         return true;
     }
 
@@ -47,10 +47,8 @@ public class PlayerInventory : MonoBehaviour
     {
         if (index >= 0 && index < heldItems.Count)
         {
-            // if item has effect??? apply it here...
-
             heldItems.RemoveAt(index);
-            onInventoryChanged.Invoke();
+            onInventoryChanged.Invoke(heldItems[index].Type());
         }
     }
 

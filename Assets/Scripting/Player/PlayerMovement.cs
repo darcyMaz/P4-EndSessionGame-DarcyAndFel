@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float movementAcceleration = 6f;
     private float currentSpeed = 0f;
     [SerializeField] private float minSpeed = 0.05f;
+    private float CurrentSpeedBoost;
 
     // Jump
     [SerializeField] float JumpForce = 10f;
@@ -84,9 +85,13 @@ public class PlayerMovement : MonoBehaviour
         
         if (!TryGetComponent(out rb)) Debug.Log("The PlayerMovement component could not find its RigidBody2D.");
         else { UseRB = true; }
-        
+
         if (!TryGetComponent(out playerStats)) Debug.Log("The PlayerMovement script could not find its PlayerStats component.");
-        else HasPlayerStats = true;
+        else
+        {
+            HasPlayerStats = true;
+            CurrentSpeedBoost = playerStats.GetCurrentSpeedBoost();
+        }
 
         if (!TryGetComponent(out playerCollider)) Debug.Log("The PlayerMovement component could not find its Collider2D.");
         else HasCollider = true;
@@ -107,6 +112,8 @@ public class PlayerMovement : MonoBehaviour
     {
         // If we never found the RigidBody2D then we can't do any movement.
         if (!UseRB) return;
+
+        if (HasPlayerStats) CurrentSpeedBoost = playerStats.GetCurrentSpeedBoost();
 
         // Debug.Log(IsDead);
 
@@ -134,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (movement != 0) 
             // This happens when we move
-            currentSpeed = Mathf.SmoothDamp(currentSpeed, movementSpeed, ref speed_ref, movementAcceleration * Time.fixedDeltaTime);
+            currentSpeed = Mathf.SmoothDamp(currentSpeed, movementSpeed * CurrentSpeedBoost, ref speed_ref, movementAcceleration * Time.fixedDeltaTime);
 
         else
             // This happens when we let go of move.
