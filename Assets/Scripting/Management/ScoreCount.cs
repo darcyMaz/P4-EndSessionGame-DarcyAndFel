@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class ScoreCount : MonoBehaviour
 {
+    public static ScoreCount Instance { get; private set; }
+
     private bool OneTimeSet = true;
 
+    private float Timer;
     private string LevelName;
     private int TimerScore;
     private int ItemScore;
@@ -15,15 +18,29 @@ public class ScoreCount : MonoBehaviour
 
     public void SetVals(float aTimer, int aItemScore, string aLevelName)
     {
+        if (Instance != null) return;
+
         if (OneTimeSet)
         {
+            Timer = aTimer;
             LevelName = aLevelName;
             TimerScore = GetScoreFromTimer(aTimer);
             ItemScore = aItemScore;
+            Instance = this;
         }
         OneTimeSet = false;
     }
 
+    public void DestroyScoreCount()
+    {
+        Instance = null;
+        Destroy(gameObject);
+    }
+
+    public float GetTime()
+    {
+        return Timer;
+    }
     public int GetTimerScore()
     {
         return TimerScore;
