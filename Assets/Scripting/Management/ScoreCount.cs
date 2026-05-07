@@ -4,6 +4,7 @@ public class ScoreCount : MonoBehaviour
 {
     private bool OneTimeSet = true;
 
+    private string LevelName;
     private int TimerScore;
     private int ItemScore;
 
@@ -12,10 +13,11 @@ public class ScoreCount : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void SetVals(float aTimer, int aItemScore)
+    public void SetVals(float aTimer, int aItemScore, string aLevelName)
     {
         if (OneTimeSet)
         {
+            LevelName = aLevelName;
             TimerScore = GetScoreFromTimer(aTimer);
             ItemScore = aItemScore;
         }
@@ -33,6 +35,10 @@ public class ScoreCount : MonoBehaviour
     public int GetScore()
     {
         return ItemScore + TimerScore;
+    }
+    public string GetLevelName()
+    {
+        return LevelName;
     }
 
     // I'll def need to implement level specific scores for the time.

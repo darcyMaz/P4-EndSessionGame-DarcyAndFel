@@ -77,6 +77,9 @@ public class PlayerStats : MonoBehaviour
 
         GameManager.Instance.OnSaveAndQuit += SaveAndQuit;
 
+        // Check to see if this level has a folder for persistant file saving.
+        SaveManager.Instance.TryMakeLevelDir(GameManager.Instance.GetLevelName());
+
         string potentialFileName = Application.persistentDataPath + "/" + GameManager.Instance.GetLevelName() + "/" + PlayerNum + "_PlayerData.json";
         PlayerSaveData psd = SaveManager.Instance.LoadPlayerdata(potentialFileName);
 
@@ -141,7 +144,7 @@ public class PlayerStats : MonoBehaviour
         else
         {
             // This code is run if there's no save data.
-            Debug.Log("No save data");
+            // Debug.Log("No save data");
             if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints())
             {
                 Debug.Log("GM has checkpoints");
@@ -166,7 +169,7 @@ public class PlayerStats : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(CheckpointIndex);
+        // Debug.Log(CheckpointIndex);
 
         CheckpointCheck();
     }
@@ -185,7 +188,7 @@ public class PlayerStats : MonoBehaviour
     private void CheckpointCheck()
     {
 
-        Debug.Log(HasCheckpoints + " " + PassedLastCheckpoint);
+        //Debug.Log(HasCheckpoints + " " + PassedLastCheckpoint);
 
         // If we have no checkpoints in front of us.
         if (!HasCheckpoints || PassedLastCheckpoint)
@@ -193,7 +196,7 @@ public class PlayerStats : MonoBehaviour
             // Debug.Log("No checkpoints in front: PlayerStats");
             ReachedEndCheck();
 
-            Debug.Log("Check reset height: " + transform.position.y + " < " + ResetHeight);
+            //Debug.Log("Check reset height: " + transform.position.y + " < " + ResetHeight);
 
             // If we've fallen below the reset height.
             if (transform.position.y < ResetHeight)

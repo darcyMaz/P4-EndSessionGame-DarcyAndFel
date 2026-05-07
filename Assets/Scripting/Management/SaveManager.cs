@@ -1,8 +1,6 @@
 using System;
 using System.IO;
-using UnityEditor.Overlays;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class SaveManager : MonoBehaviour
 {
@@ -10,11 +8,16 @@ public class SaveManager : MonoBehaviour
 
     private void Awake()
     {
+
         if (Instance != null && Instance != this)
         {
+            //Debug.Log(Instance + ": " + SaveManager.Instance.name);
+            //Debug.Log((Instance == this) + " SaveManager");
             Destroy(gameObject);
             return;
         }
+        //Debug.Log("Save Manager after if statement awake");
+
         Instance = this;
 
         DontDestroyOnLoad(gameObject);

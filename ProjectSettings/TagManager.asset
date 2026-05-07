@@ -8,6 +8,7 @@ TagManager:
   - SpeedBoost
   - PlusTen
   - PlusFive
+  - EndZone
   layers:
   - Default
   - TransparentFX

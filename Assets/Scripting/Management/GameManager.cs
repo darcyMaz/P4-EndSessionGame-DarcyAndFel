@@ -35,9 +35,8 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
 
-        // Check to see if this level has a folder for persistant file saving.
-        SaveManager.Instance.TryMakeLevelDir(CurrentLevel);
 
+        
         // Checkpoints as SOs
         Checkpoint[] checkpoints_arr = Resources.LoadAll<Checkpoint>("Checkpoints/" + CurrentLevel);
 
@@ -161,6 +160,8 @@ public class GameManager : MonoBehaviour
         {
             sc.SetVals(time, inventoryScore);
         }
+
+        SceneManager.Instance.BufferSceneChange("Score Count");
     }
 }
 

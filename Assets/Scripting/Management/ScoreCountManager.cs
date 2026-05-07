@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ScoreCountManager : MonoBehaviour
 {
@@ -6,6 +7,8 @@ public class ScoreCountManager : MonoBehaviour
     // so we get the timer, the 
 
     private string PrevLevelName = "";
+
+    [SerializeField] private UnityEvent OnCountScore;
 
     public void MainMenu()
     {
