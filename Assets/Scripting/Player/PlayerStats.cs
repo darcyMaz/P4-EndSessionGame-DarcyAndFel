@@ -22,7 +22,8 @@ public class PlayerStats : MonoBehaviour
     private Dictionary<int, float> SpeedBoosts = new Dictionary<int, float>();
     [SerializeField] private int MaxSpeedBoost;
     [SerializeField] private float SpeedBoostTime = 4;
-    private float SpeedBoostTimer;
+    private float SpeedBoostTimer = 0;
+    private bool SpeedBoostActive = false;
 
     // Death
     public event Action <Vector3> OnDeath;
@@ -62,6 +63,7 @@ public class PlayerStats : MonoBehaviour
         pause.performed += PauseGame;
 
         OnCheckpointReached += SetNextCheckpoint;
+
     }
     private void OnDisable()
     {
@@ -74,6 +76,8 @@ public class PlayerStats : MonoBehaviour
         OnCheckpointReached -= SetNextCheckpoint;
 
         if (HasInventory) inventory.onInventoryChanged += InventoryChanged;
+
+        OnSpeedBoostChange -= GameManager.Instance.AdjustSpeedUI;
     }
 
     private void Start()
@@ -81,6 +85,7 @@ public class PlayerStats : MonoBehaviour
         SpeedBoosts.Add(0, 1);
         SpeedBoosts.Add(1, 1.2f);
         SpeedBoosts.Add(2, 1.4f);
+        SpeedBoosts.Add(3, 1.6f);
 
         if (!TryGetComponent(out inventory)) Debug.Log("The PlayerStats component could not find its PlayerInventory ");
         else
@@ -91,6 +96,7 @@ public class PlayerStats : MonoBehaviour
         }
 
         GameManager.Instance.OnSaveAndQuit += SaveAndQuit;
+        OnSpeedBoostChange += GameManager.Instance.AdjustSpeedUI;
 
         // Check to see if this level has a folder for persistant file saving.
         SaveManager.Instance.TryMakeLevelDir(GameManager.Instance.GetLevelName());
@@ -98,10 +104,15 @@ public class PlayerStats : MonoBehaviour
         string potentialFileName = Application.persistentDataPath + "/" + GameManager.Instance.GetLevelName() + "/" + PlayerNum + "_PlayerData.json";
         PlayerSaveData psd = SaveManager.Instance.LoadPlayerdata(potentialFileName);
 
+
+
         // Try to load save data.
         // If there is save data, then ...
         if (psd != null)
         {
+            Debug.Log(psd.GetCheckpointPos());
+            Debug.Log(psd.GetCheckpointNum());
+
             // If the game manager has checkpoints for this level.
             if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints())
             {
@@ -117,6 +128,8 @@ public class PlayerStats : MonoBehaviour
                 }
                 else
                 {
+                    // Debug.Log(CheckpointIndex + "PlayerStats checkpoint index");
+
                     NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
 
                     // If, for some unknown reason, the checkpoint could not be loaded.
@@ -130,8 +143,11 @@ public class PlayerStats : MonoBehaviour
                     }
                     else
                     {
-                        ResetHeight = GameManager.Instance.GetCheckpoint(psd.GetCheckpointNum() - 1).GetTriggerVals().y;
+                        
+                        ResetHeight = GameManager.Instance.GetCheckpoint(psd.GetCheckpointNum()).GetTriggerVals().y;
                         LastCheckpointPos = psd.GetCheckpointPos();
+                        
+                            
                     }
                 }
                 
@@ -159,7 +175,7 @@ public class PlayerStats : MonoBehaviour
             // Debug.Log("No save data");
             if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints())
             {
-                Debug.Log("GM has checkpoints");
+                // Debug.Log("GM has checkpoints");
                 NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
 
                 if (NextCheckpoint == null)
@@ -169,7 +185,7 @@ public class PlayerStats : MonoBehaviour
                 }
             }
 
-            Debug.Log("Setting to default values");
+            // Debug.Log("Setting to default values");
             LastCheckpointPos = transform.position;
             ResetHeight = transform.position.y - 5f; // A little lower than the start pos.
 
@@ -181,7 +197,14 @@ public class PlayerStats : MonoBehaviour
 
     private void Update()
     {
-        
+        // Debug.Log(SpeedBoostTimer + " " + SpeedBoostLevel);
+
+        SpeedBoostTimer = (SpeedBoostTimer - Time.deltaTime < 0) ? 0: SpeedBoostTimer - Time.deltaTime;
+        if (SpeedBoostActive && SpeedBoostTimer <= 0)
+        {
+            ChangeSpeedBoost(-1);
+        }
+
         CheckpointCheck();
     }
 
@@ -205,6 +228,7 @@ public class PlayerStats : MonoBehaviour
         if (!HasCheckpoints || PassedLastCheckpoint)
         {
             // Debug.Log("No checkpoints in front: PlayerStats");
+            // This is not used, an event replaced this.
             ReachedEndCheck();
 
             //Debug.Log("Check reset height: " + transform.position.y + " < " + ResetHeight);
@@ -244,7 +268,7 @@ public class PlayerStats : MonoBehaviour
         // Check if we've reached the next checkpoint.
         if (triggerY && triggerX)
         {
-            Debug.Log("Is this being called twice?");
+            // Debug.Log("Is this being called twice?");
 
             LastCheckpointPos = NextCheckpoint.GetRespawnPos();
             ResetHeight = triggerVals.y;
@@ -276,7 +300,7 @@ public class PlayerStats : MonoBehaviour
 
     private void ReachedEndCheck()
     {
-        Debug.Log("Checking if we've reached the end - player stats");
+        //Debug.Log("Checking if we've reached the end - player stats");
     }
 
     private string BuildSaveData()
@@ -287,7 +311,7 @@ public class PlayerStats : MonoBehaviour
         else inventoryToSend = new List<ItemData>();
 
         // Make this a string instead with json whatever
-        PlayerSaveData toReturn = new PlayerSaveData(LastCheckpointPos, CheckpointIndex, GameManager.Instance.GetLevelName(), inventoryToSend, PlayerNum);
+        PlayerSaveData toReturn = new PlayerSaveData(LastCheckpointPos, CheckpointIndex-1, GameManager.Instance.GetLevelName(), inventoryToSend, PlayerNum);
 
         return JsonUtility.ToJson(toReturn);
     }
@@ -321,8 +345,18 @@ public class PlayerStats : MonoBehaviour
 
     public int ChangeSpeedBoost(int delta)
     {
+        // Debug.Log("Change Speed Boost: " + SpeedBoostLevel + " " + delta);
+
         SpeedBoostLevel = (SpeedBoostLevel + delta > MaxSpeedBoost) ? MaxSpeedBoost : (SpeedBoostLevel + delta < 0) ? 0: SpeedBoostLevel + delta;
         OnSpeedBoostChange?.Invoke(SpeedBoostLevel);
+
+        if (SpeedBoostLevel > 0)
+        {
+            SpeedBoostActive = true;
+            SpeedBoostTimer = SpeedBoostTime;
+        }
+        else SpeedBoostActive = false;
+
         return SpeedBoostLevel;
     }
 

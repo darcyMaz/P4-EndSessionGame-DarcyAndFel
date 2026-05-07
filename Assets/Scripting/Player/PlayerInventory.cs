@@ -20,8 +20,13 @@ public class PlayerInventory : MonoBehaviour
         heldItems = new List<ItemData>(); 
     }
 
+    private void Start()
+    {
+        onInventoryChanged?.Invoke(ItemType.None);
+    }
+
     // public API
-   
+
     public int Count => heldItems.Count;
     public bool IsFull => heldItems.Count >= maxCapacity;
 
@@ -34,7 +39,7 @@ public class PlayerInventory : MonoBehaviour
             return false;
         }
         heldItems.Add(type);
-        onInventoryChanged.Invoke(ItemType.None);
+        onInventoryChanged?.Invoke(ItemType.None);
         return true;
     }
 
@@ -45,10 +50,14 @@ public class PlayerInventory : MonoBehaviour
 
     public void RemoveItemAt(int index)
     {
+        //Debug.Log(index + " " + heldItems.Count);
+        //heldItems.ForEach((ItemData a) => { Debug.Log(a.ItemName()); });
+
         if (index >= 0 && index < heldItems.Count)
         {
+            ItemType it = heldItems[index].Type();
             heldItems.RemoveAt(index);
-            onInventoryChanged.Invoke(heldItems[index].Type());
+            onInventoryChanged.Invoke(it);
         }
     }
 

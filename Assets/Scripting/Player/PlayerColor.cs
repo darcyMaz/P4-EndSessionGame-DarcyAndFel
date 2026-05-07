@@ -10,40 +10,34 @@ public class PlayerColor : MonoBehaviour
     [SerializeField] Color color1;
     [SerializeField] Color color2;
     [SerializeField] Color color3;
+
+    private bool HasSR = false;
+    private bool HasStats = false;
+
     void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
-        playerStats = GetComponent<PlayerStats>();
-        playerStats.OnSpeedBoostChange += ChangeColor;
-        color0 = sr.color;
+        if (!TryGetComponent(out sr)) Debug.Log("PlayerColor component could not find the sprite renderer component.");
+        else HasSR = true;
+
+        if (!TryGetComponent(out playerStats)) Debug.Log("PlayerColor component could not find the PlayerStats component.");
+        else HasStats = true;
+
+        //sr = GetComponent<SpriteRenderer>();
+        //playerStats = GetComponent<PlayerStats>();
+        
+        if (HasStats) playerStats.OnSpeedBoostChange += ChangeColor;
+        if (HasSR) color0 = sr.color;
     }
 
     private void OnDisable()
     {
-        playerStats.OnSpeedBoostChange -= ChangeColor;
+        if (HasStats) playerStats.OnSpeedBoostChange -= ChangeColor;
     }
-
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    /*   private void OnTriggerEnter2D(Collider2D other)
-       {
-           if (other.CompareTag("SpeedBoost"))
-
-           {
-               sr.color = color1;
-               Debug.Log("test");
-
-           }
-
-       } */
 
     private void ChangeColor(int SpeedBoostStack)
     {
+        if (!HasSR) return;
+
         if (SpeedBoostStack == 0)
         {
             sr.color = color0;
@@ -60,6 +54,5 @@ public class PlayerColor : MonoBehaviour
         {
             sr.color = color3;
         }
-        Debug.Log("changed color");
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -7,6 +8,10 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    [SerializeField] private TextMeshProUGUI height_indicator_text;
+    [SerializeField] private TextMeshProUGUI timer_text;
+    [SerializeField] private TextMeshProUGUI speed_boost_text;
 
     public static event Action<float> OnTimeIncrement;
     private float time = 0;
@@ -64,9 +69,18 @@ public class GameManager : MonoBehaviour
             checkpoints.Sort();
         }
     }
+    private void OnDisable()
+    {
+        OnTimeIncrement -= AdjustTimer;
+    }
 
     private void Start()
     {
+        AdjustSpeedUI(0);
+        AdjustHeightIndicator(0);
+        AdjustTimer(0);
+
+
         // Get the inventory slots.
         // Get all the UI slots in the inventory and add them to the list.
         foreach (Transform child in InventoryPanel.transform)
@@ -86,10 +100,13 @@ public class GameManager : MonoBehaviour
             ps.OnPause += Pause;
             ps.OnLevelComplete += LevelComplete;
             ps.OnInventoryChange += AdjustInventoryUI;
+            ps.OnCheckpointReached += AdjustHeightIndicator;
         }
         // We listen to the addition of removal of players in run time.
         PlayerStats.OnPlayerStatsAdded += AddPlayerStats;
         PlayerStats.OnPlayerStatsRemoved += RemovePlayerStats;
+
+        OnTimeIncrement += AdjustTimer;
     }
 
     private void Update()
@@ -105,6 +122,7 @@ public class GameManager : MonoBehaviour
         toRemove.OnLevelComplete -= LevelComplete;
         toRemove.OnPause -= Pause;
         toRemove.OnInventoryChange += AdjustInventoryUI;
+        toRemove.OnCheckpointReached += AdjustHeightIndicator;
     }
     private void AddPlayerStats(PlayerStats toAdd)
     {
@@ -112,6 +130,7 @@ public class GameManager : MonoBehaviour
         toAdd.OnPause += Pause;
         toAdd.OnLevelComplete += LevelComplete;
         toAdd.OnInventoryChange -= AdjustInventoryUI;
+        toAdd.OnCheckpointReached += AdjustHeightIndicator;
     }
 
     private void Pause()
@@ -147,7 +166,6 @@ public class GameManager : MonoBehaviour
         return CurrentLevel;
     }
 
-
     public void SaveAndQuit()
     {
         Pause();
@@ -175,9 +193,23 @@ public class GameManager : MonoBehaviour
             sc.SetVals(time, inventoryScore, GetLevelName());
         }
 
-
-
         SceneManager.Instance.BufferSceneChange("Score Count");
+    }
+
+    public void AdjustSpeedUI(int speedLevel)
+    {
+        speed_boost_text.text = speedLevel + "/" + 3 + " Speed Level Reached.";
+    }
+    public void AdjustTimer(float time)
+    {
+        timer_text.text = time.ToString();
+    }
+    public void AdjustHeightIndicator(int currentCheckpoint)
+    {
+        if (HasCheckpoints)
+        {
+            height_indicator_text.text = currentCheckpoint + "/" + checkpoints.Count + " Checkpoints Reached.";
+        }
     }
 
     private void AdjustInventoryUI(PlayerInventory pi)

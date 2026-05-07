@@ -22,7 +22,7 @@ public class PlayerSaveData
         // Deep copy the list.
         foreach (ItemData item in aInventory)
         {
-            inventory.Add(  JsonUtility.ToJson(item) );
+            // inventory.Add(  JsonUtility.ToJson(item) );
         }
 
         PlayerNum = aPlayerNum;
@@ -37,7 +37,8 @@ public class PlayerSaveData
         // Deep copy the list.
         foreach (ItemData item in aInventory)
         {
-            inventory.Add( JsonUtility.ToJson(item) );
+            //Debug.Log(item.ItemName());
+            //inventory.Add( JsonUtility.ToJson(item) );
         }
 
         PlayerNum = aPlayerNum;

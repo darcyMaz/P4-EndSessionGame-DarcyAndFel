@@ -287,7 +287,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Death(Vector3 aCheckpoint)
     {
-        Debug.Log("death called: PlayerMovement");
+        // Debug.Log("death called: PlayerMovement");
 
         // Stop the player totally.
         rb.linearVelocity = new Vector3(0, 0, 0);
@@ -322,7 +322,7 @@ public class PlayerMovement : MonoBehaviour
                         &&
                       rb.transform.position.y <= Checkpoint.y + tolerence;
 
-        Debug.Log(xCheck + " " + yCheck + 0);
+        // Debug.Log(xCheck + " " + yCheck + 0);
 
         // When the player reaches the checkpoint on respawn.
         // I probably want to change this so it has some tolerance.
@@ -334,6 +334,6 @@ public class PlayerMovement : MonoBehaviour
             IsDead = false;
         }
 
-        Debug.Log(xCheck + " " + yCheck + 1);
+        // Debug.Log(xCheck + " " + yCheck + 1);
     }
 }

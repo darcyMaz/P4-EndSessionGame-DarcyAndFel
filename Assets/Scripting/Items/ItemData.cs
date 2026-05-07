@@ -1,10 +1,8 @@
 using UnityEngine;
 
 [System.Serializable]
-[CreateAssetMenu(fileName = "NewItem",
-    menuName = "Collectible/Item")]
+[CreateAssetMenu(fileName = "NewItem", menuName = "Collectible/Item")]
 public class ItemData : ScriptableObject
-
 {
     [SerializeField] private ItemType type;
     [SerializeField] private string itemName;
