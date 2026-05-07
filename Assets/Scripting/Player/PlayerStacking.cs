@@ -20,10 +20,18 @@ public class PlayerStacking : MonoBehaviour
 
             Debug.Log($"Collected speed boost");
             //  other.GetComponent<SpriteRenderer>();
-            PlayerStats  playerStats = other.GetComponent<PlayerStats>();
-            int currentSpeedBoost = playerStats.ChangeSpeedBoost(1);
-            Debug.Log(currentSpeedBoost);
-            Destroy(gameObject);
+            // PlayerStats  playerStats = other.GetComponent<PlayerStats>();
+            // int currentSpeedBoost = playerStats.ChangeSpeedBoost(1);
+            // Debug.Log(currentSpeedBoost);
+
+            //PlayerInventory inventory;
+            //if (!other.gameObject.TryGetComponent(out inventory)) Debug.Log("An object tagged 'Player' did not have its PlayerInventory component.");
+            //else
+            //{
+            //    inventory.PickUp();
+            //}
+            
+            //Destroy(gameObject);
 
         }
         // add maximum stack capacity logic

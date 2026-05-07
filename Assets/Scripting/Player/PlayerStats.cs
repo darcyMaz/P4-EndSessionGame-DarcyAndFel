@@ -39,6 +39,7 @@ public class PlayerStats : MonoBehaviour
     // Inventory
     private PlayerInventory inventory;
     private bool HasInventory = false;
+    public event Action <PlayerInventory> OnInventoryChange;
 
     // Complete Level
     public event Action <int> OnLevelComplete;
@@ -68,12 +69,20 @@ public class PlayerStats : MonoBehaviour
         pause.performed -= PauseGame;
 
         OnCheckpointReached -= SetNextCheckpoint;
+
+        if (HasInventory) inventory.onInventoryChanged += InventoryChanged;
     }
 
     private void Start()
     {
         if (!TryGetComponent(out inventory)) Debug.Log("The PlayerStats component could not find its PlayerInventory ");
-        else HasInventory = true;
+        else
+        {
+            HasInventory = true;
+            inventory.onInventoryChanged += InventoryChanged;
+        }
+
+        
 
         GameManager.Instance.OnSaveAndQuit += SaveAndQuit;
 
@@ -82,9 +91,6 @@ public class PlayerStats : MonoBehaviour
 
         string potentialFileName = Application.persistentDataPath + "/" + GameManager.Instance.GetLevelName() + "/" + PlayerNum + "_PlayerData.json";
         PlayerSaveData psd = SaveManager.Instance.LoadPlayerdata(potentialFileName);
-
-        // 
-        //Debug.Log("psd.GetCheckPos(): " + psd.GetCheckpointPos());
 
         // Try to load save data.
         // If there is save data, then ...
@@ -299,6 +305,11 @@ public class PlayerStats : MonoBehaviour
 
             OnLevelComplete?.Invoke(inventoryScore);
         }
+    }
+
+    private void InventoryChanged()
+    {
+        OnInventoryChange?.Invoke(inventory);
     }
 
     public int ChangeSpeedBoost(int delta)

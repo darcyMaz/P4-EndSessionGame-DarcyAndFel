@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,7 +11,13 @@ public class GameManager : MonoBehaviour
     public static event Action<float> OnTimeIncrement;
     private float time = 0;
 
+    [SerializeField] private GameObject ScoreCountGO;
+    public event Action OnLevelComplete;
+
     [SerializeField] private string CurrentLevel;
+
+    [SerializeField] private GameObject InventoryPanel;
+    private List<Button> InventoryElements = new List<Button>();
 
     private List<Checkpoint> checkpoints;
     private bool HasCheckpoints = true;
@@ -23,8 +30,7 @@ public class GameManager : MonoBehaviour
     public event Action OnSaveAndQuit;
     public event Action OnResetLevel;
 
-    [SerializeField] private GameObject ScoreCountGO;
-    public event Action OnLevelComplete;
+    
 
     private void Awake()
     {
@@ -59,23 +65,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        // DeathZone.OnDeath += ;
-    }
-    private void OnDisable()
-    {
-        
-    }
-
     private void Start()
     {
+        // Get the inventory slots.
+        // Get all the UI slots in the inventory and add them to the list.
+        foreach (Transform child in InventoryPanel.transform)
+        {
+            Button currentButton;
+            if (!child.gameObject.TryGetComponent(out currentButton)) Debug.Log("The GameManager had a problem getting a Button from the inventory UI panel.");
+            else
+            {
+                InventoryElements.Add(currentButton);
+            }
+        }
+
         // If there is more than one player in the game, the GameManager listens to all of their heights.
         foreach (PlayerStats ps in PlayerStats.GetPlayerStats())
         {
             ps.OnSaveAndQuitPlayer += HandlePlayerSaveData;
             ps.OnPause += Pause;
             ps.OnLevelComplete += LevelComplete;
+            ps.OnInventoryChange += AdjustInventoryUI;
         }
         // We listen to the addition of removal of players in run time.
         PlayerStats.OnPlayerStatsAdded += AddPlayerStats;
@@ -94,12 +104,14 @@ public class GameManager : MonoBehaviour
         toRemove.OnSaveAndQuitPlayer += HandlePlayerSaveData;
         toRemove.OnLevelComplete -= LevelComplete;
         toRemove.OnPause -= Pause;
+        toRemove.OnInventoryChange += AdjustInventoryUI;
     }
     private void AddPlayerStats(PlayerStats toAdd)
     {
         toAdd.OnSaveAndQuitPlayer += HandlePlayerSaveData;
         toAdd.OnPause += Pause;
         toAdd.OnLevelComplete += LevelComplete;
+        toAdd.OnInventoryChange -= AdjustInventoryUI;
     }
 
     private void Pause()
@@ -112,6 +124,8 @@ public class GameManager : MonoBehaviour
     {
         SaveManager.Instance.SavePlayerData(savedata, playerNum, CurrentLevel);
     }
+
+
 
     public Checkpoint GetCheckpoint(int index)
     {
@@ -164,6 +178,33 @@ public class GameManager : MonoBehaviour
 
 
         SceneManager.Instance.BufferSceneChange("Score Count");
+    }
+
+    private void AdjustInventoryUI(PlayerInventory pi)
+    {
+        // Get the count of inventory items
+        // Turn on that many buttons, along the way add inventory items' sprites to them
+
+        int itemsTotal = pi.Count;
+        int buttonIndex = 0;
+
+        for (; buttonIndex < itemsTotal; buttonIndex++)
+        {
+            // set button to true and put in the sprite as the image
+            InventoryElements[buttonIndex].gameObject.SetActive(true);
+
+            Image buttonImage;
+            if (!InventoryElements[buttonIndex].gameObject.TryGetComponent(out buttonImage)) Debug.Log("GameManager tried to change the sprite of an item slot in inventory but failed. In AdjustInventoryUI().");
+            else
+            {
+                buttonImage.sprite = pi.GetIconAt(buttonIndex);
+            }
+        }
+        for (; buttonIndex < InventoryElements.Count; buttonIndex++)
+        {
+            // set the button is active to false
+            InventoryElements[buttonIndex].gameObject.SetActive(false);
+        }
     }
 }
 

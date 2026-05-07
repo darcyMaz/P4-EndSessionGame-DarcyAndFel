@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using NUnit.Framework.Interfaces;
 using UnityEngine;
-using UnityEngine.Events;
+using System;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -10,8 +9,8 @@ public class PlayerInventory : MonoBehaviour
    
     [SerializeField] private int maxCapacity = 5;
 
-    [Header("Events")]
-    [SerializeField] private UnityEvent onInventoryChanged;
+    // [Header("Events")]
+    public event Action onInventoryChanged;
     
     // private state
     private List<ItemData> heldItems;
@@ -50,6 +49,11 @@ public class PlayerInventory : MonoBehaviour
             score += item.Value();
         }
         return score;
+    }
+
+    public Sprite GetIconAt(int index)
+    {
+        return heldItems[index].Icon();
     }
 
     public IEnumerable<ItemData> GetItems()
