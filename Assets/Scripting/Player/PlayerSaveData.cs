@@ -22,6 +22,19 @@ public class PlayerSaveData : MonoBehaviour
         }
     }
 
+    public PlayerSaveData(Vector3 aLCP, int aCN, string aLN, IEnumerable<ItemData> aInventory)
+    {
+        LastCheckPointPos = aLCP;
+        CheckpointNumber = aCN;
+        LevelName = aLN;
+
+        // Deep copy the list.
+        foreach (ItemData item in aInventory)
+        {
+            inventory.Add(item);
+        }
+    }
+
     // Getter functions
     public Vector3 GetCheckpointPos()
     {

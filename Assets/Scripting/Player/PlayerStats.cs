@@ -28,9 +28,18 @@ public class PlayerStats : MonoBehaviour
     private Vector2 LastCheckpointPos;
     private float ResetHeight;
 
+    private PlayerInventory inventory;
+    private bool HasInventory = false;
+
     private void Awake()
     {
         _actions = new ProjectActions();
+
+        // get the save data
+        // save that stuff into here
+        // player inventory also has stuff in the start function where it gets inventory at the start
+
+
     }
 
     private void Start()
@@ -41,6 +50,8 @@ public class PlayerStats : MonoBehaviour
 
         if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints())
         {
+            // Rather than getting the first checkpoint, I want to have gotten the save data and worked from that
+
             // get the first checkpoint and save it
             NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
         }
@@ -49,6 +60,9 @@ public class PlayerStats : MonoBehaviour
         // These will update as we pass checkpoints
         LastCheckpointPos = transform.position;
         ResetHeight = transform.position.y - 5f; // A little lower than the start pos.
+
+        if (!TryGetComponent(out inventory)) Debug.Log("The PlayerStats component could not find its PlayerInventory ");
+        else HasInventory = true;
     }
 
     private void OnEnable()
@@ -159,6 +173,13 @@ public class PlayerStats : MonoBehaviour
     private void ReachedEndCheck()
     {
         Debug.Log("Checking if we've reached the end - player stats");
+    }
+
+    private PlayerSaveData BuildSaveData()
+    {
+        // Make this a string instead with json whatever
+        PlayerSaveData toReturn = new PlayerSaveData(LastCheckpointPos, CheckpointIndex, GameManager.Instance.GetLevelName(), inventory.GetItems());
+        return toReturn;
     }
 
     public int ChangeSpeedBoost(int delta)

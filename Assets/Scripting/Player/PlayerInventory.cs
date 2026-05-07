@@ -13,11 +13,8 @@ public class PlayerInventory : MonoBehaviour
     [Header("Events")]
     [SerializeField] private UnityEvent onInventoryChanged;
     
-
     // private state
     private List<ItemData> heldItems;
-
-    
 
     private void Awake()
     {
@@ -45,4 +42,11 @@ public class PlayerInventory : MonoBehaviour
     public bool Has(ItemData type)
         => heldItems.Contains(type);
 
+    public IEnumerable<ItemData> GetItems()
+    {
+        foreach (ItemData item in heldItems)
+        {
+            yield return item;
+        }
+    }
 }

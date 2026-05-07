@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UnityEvent <bool> OnPauseFlipped;
     private bool IsPaused = false;
 
+    public event Action OnSaveAndQuit;
+
     // public event Action <PlayerStats> OnPlayerDeath;
 
     private void Awake()
@@ -116,12 +118,20 @@ public class GameManager : MonoBehaviour
         return HasCheckpoints;
     }
 
+    public string GetLevelName()
+    {
+        return CurrentLevel;
+    }
+
+
     public void SaveAndQuit()
     {
         // save the gamestate into a json utility
         // save the last checkpoint basically
 
         // and then go to the main menu
+
+        
 
         Debug.Log("SaveAndQuit() called: GameManager");
     }
