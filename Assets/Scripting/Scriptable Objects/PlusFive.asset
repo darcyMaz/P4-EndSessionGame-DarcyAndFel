@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: PlusFive
   icon: {fileID: -5786164333596270976, guid: b1f24b3bc2e2f1d4b858657ad5c115a0, type: 3}
   value: 5
-  isConsumable: 1
+  isConsumable: 0

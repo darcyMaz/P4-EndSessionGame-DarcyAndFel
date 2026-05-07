@@ -16,4 +16,4 @@ MonoBehaviour:
   itemName: PlusTen
   icon: {fileID: 7293598183456022363, guid: 1ddc9afd21fec77489b1248d18f31b68, type: 3}
   value: 10
-  isConsumable: 1
+  isConsumable: 0
