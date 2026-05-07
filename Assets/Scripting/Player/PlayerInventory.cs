@@ -42,6 +42,16 @@ public class PlayerInventory : MonoBehaviour
     public bool Has(ItemData type)
         => heldItems.Contains(type);
 
+    public int GetTotalScore()
+    {
+        int score = 0;
+        foreach (ItemData item in heldItems)
+        {
+            score += item.Value();
+        }
+        return score;
+    }
+
     public IEnumerable<ItemData> GetItems()
     {
         foreach (ItemData item in heldItems)

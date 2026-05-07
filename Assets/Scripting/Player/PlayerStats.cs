@@ -40,6 +40,9 @@ public class PlayerStats : MonoBehaviour
     private PlayerInventory inventory;
     private bool HasInventory = false;
 
+    // Complete Level
+    public event Action <int> OnLevelComplete;
+
     private void Awake()
     {
         _actions = new ProjectActions();
@@ -281,6 +284,18 @@ public class PlayerStats : MonoBehaviour
         Debug.Log(json);
 
         OnSaveAndQuitPlayer?.Invoke(json, PlayerNum);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "EndZone")
+        {
+            int inventoryScore = 0;
+            if (HasInventory) inventoryScore = inventory.GetTotalScore();
+
+
+            OnLevelComplete?.Invoke(inventoryScore);
+        }
     }
 
     public int ChangeSpeedBoost(int delta)

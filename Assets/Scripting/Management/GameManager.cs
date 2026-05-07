@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     public event Action OnSaveAndQuit;
     public event Action OnResetLevel;
 
+    [SerializeField] private GameObject ScoreCountGO;
+    public event Action OnLevelComplete;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -68,14 +71,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Load player data
-
-
         // If there is more than one player in the game, the GameManager listens to all of their heights.
         foreach (PlayerStats ps in PlayerStats.GetPlayerStats())
         {
             ps.OnSaveAndQuitPlayer += HandlePlayerSaveData;
             ps.OnPause += Pause;
+            ps.OnLevelComplete += LevelComplete;
         }
         // We listen to the addition of removal of players in run time.
         PlayerStats.OnPlayerStatsAdded += AddPlayerStats;
@@ -92,12 +93,14 @@ public class GameManager : MonoBehaviour
     private void RemovePlayerStats(PlayerStats toRemove)
     {
         toRemove.OnSaveAndQuitPlayer += HandlePlayerSaveData;
+        toRemove.OnLevelComplete -= LevelComplete;
         toRemove.OnPause -= Pause;
     }
     private void AddPlayerStats(PlayerStats toAdd)
     {
         toAdd.OnSaveAndQuitPlayer += HandlePlayerSaveData;
         toAdd.OnPause += Pause;
+        toAdd.OnLevelComplete += LevelComplete;
     }
 
     private void Pause()
@@ -145,6 +148,19 @@ public class GameManager : MonoBehaviour
         OnResetLevel?.Invoke();
         SaveManager.Instance.DeleteLevelSaveData(CurrentLevel);
         SceneManager.Instance.BufferSceneChange(CurrentLevel);
+    }
+
+    public void LevelComplete(int inventoryScore)
+    {
+        // create new score count, gm will hold the gameobject prefab
+        GameObject ScoreCountGO_Clone = Instantiate(ScoreCountGO);
+
+        ScoreCount sc;
+        if (!TryGetComponent(out sc)) Debug.Log("The ScoreCountGO prefab did nto have its ScoreCount component. The score may not be tallied.");
+        else
+        {
+            sc.SetVals(time, inventoryScore);
+        }
     }
 }
 

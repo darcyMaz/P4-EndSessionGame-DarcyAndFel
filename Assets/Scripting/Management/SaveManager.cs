@@ -67,8 +67,6 @@ public class SaveManager : MonoBehaviour
 
     public bool DeleteSaveData(string LevelName, int PlayerNum)
     {
-        // Application.persistentDataPath + "/" + levelName + "/" + playerNum + "_PlayerData.json"
-
         try
         {
             System.IO.File.Delete(Application.persistentDataPath + "/" + LevelName + "/" + PlayerNum + "_PlayerData.json");
