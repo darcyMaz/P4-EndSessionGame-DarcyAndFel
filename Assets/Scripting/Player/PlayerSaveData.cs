@@ -1,14 +1,17 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class PlayerSaveData
 {
-    private Vector3 LastCheckPointPos;
-    private int CheckpointNumber;
-    private string LevelName;
-    private List<ItemData> inventory;
-    private int PlayerNum;
+    // ALSO PUT THE TIMER INTO THIS
+
+    [SerializeField] private Vector3 LastCheckPointPos;
+    [SerializeField] private int CheckpointNumber;
+    [SerializeField] private string LevelName;
+    [SerializeField] private List<string> inventory;
+    [SerializeField] private int PlayerNum;
 
     public PlayerSaveData(Vector3 aLCP, int aCN, string aLN, List<ItemData> aInventory, int aPlayerNum)
     {
@@ -19,7 +22,7 @@ public class PlayerSaveData
         // Deep copy the list.
         foreach (ItemData item in aInventory)
         {
-            inventory.Add(item);
+            inventory.Add(  JsonUtility.ToJson(item) );
         }
 
         PlayerNum = aPlayerNum;
@@ -34,7 +37,7 @@ public class PlayerSaveData
         // Deep copy the list.
         foreach (ItemData item in aInventory)
         {
-            inventory.Add(item);
+            inventory.Add( JsonUtility.ToJson(item) );
         }
 
         PlayerNum = aPlayerNum;
@@ -53,11 +56,15 @@ public class PlayerSaveData
     {
         return LevelName;
     }
+    public int GetPlayerNum()
+    {
+        return PlayerNum;
+    }
     public IEnumerable<ItemData> GetInventory()
     {
-        foreach(var item in inventory)
+        foreach(string item in inventory)
         {
-            yield return item;
+            yield return JsonUtility.FromJson<ItemData>(item);
         }
     }
 

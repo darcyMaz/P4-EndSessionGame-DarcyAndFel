@@ -26,7 +26,6 @@ public class PlayerStats : MonoBehaviour
 
     // Save
     public event Action<string, int> OnSaveAndQuitPlayer;
-    private bool LoadedData = false;
 
     // Checkpoints
     public event Action <int> OnCheckpointReached;
@@ -70,21 +69,40 @@ public class PlayerStats : MonoBehaviour
 
     private void Start()
     {
-        // try to load save data, if there is no save data for this player,
-        // put in the default stuff
+        if (!TryGetComponent(out inventory)) Debug.Log("The PlayerStats component could not find its PlayerInventory ");
+        else HasInventory = true;
 
-        try
+        GameManager.Instance.OnSaveAndQuit += SaveAndQuit;
+
+        string potentialFileName = Application.persistentDataPath + "/" + GameManager.Instance.GetLevelName() + "/" + PlayerNum + "_PlayerData.json";
+        PlayerSaveData psd = SaveManager.Instance.LoadPlayerdata(potentialFileName);
+
+        // 
+        //Debug.Log("psd.GetCheckPos(): " + psd.GetCheckpointPos());
+
+        // Try to load save data.
+        // If there is save data, then ...
+        if (psd != null)
         {
-            string potentialFileName = Application.persistentDataPath + "/" + GameManager.Instance.GetLevelName() + "/" + PlayerNum + "_PlayerData.json";
-            string fileContents = System.IO.File.ReadAllText(potentialFileName);
-            PlayerSaveData psd = PlayerSaveData.LoadJson(fileContents);
-
             // If the game manager has checkpoints for this level.
             if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints())
             {
-                ResetHeight = GameManager.Instance.GetCheckpoint(psd.GetCheckpointNum()).GetTriggerVals().y;
-                LastCheckpointPos = psd.GetCheckpointPos();
-                NextCheckpoint = GameManager.Instance.GetCheckpoint(psd.GetCheckpointNum());
+                CheckpointIndex = psd.GetCheckpointNum();
+                NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
+                
+                if (NextCheckpoint == null)
+                {
+                    Debug.Log("The PlayerStats script tried to get a Checkpoint, but the CheckpointIndex was out of bounds when it shouldn't have been.");
+                    HasCheckpoints = false;
+
+                    LastCheckpointPos = transform.position;
+                    ResetHeight = transform.position.y - 5f; // A little lower than the start pos.
+                }
+                else
+                {
+                    ResetHeight = GameManager.Instance.GetCheckpoint(psd.GetCheckpointNum() - 1).GetTriggerVals().y;
+                    LastCheckpointPos = psd.GetCheckpointPos();
+                }
             }
             else
             {
@@ -93,43 +111,46 @@ public class PlayerStats : MonoBehaviour
                 ResetHeight = transform.position.y - 5f; // A little lower than the start pos.
             }
 
+            // If the player has the inventory component attached.
+            if (HasInventory)
+            {
+                foreach (ItemData item in psd.GetInventory())
+                {
+                    // Add the item from the save data.
+                    inventory.PickUp(item);
+                }
+            }
         }
-        catch
+        else
         {
             // This code is run if there's no save data.
+            Debug.Log("No save data");
+            if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints())
+            {
+                Debug.Log("GM has checkpoints");
+                NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
 
-            if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints()) NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
-            
+                if (NextCheckpoint == null)
+                {
+                    Debug.Log("The PlayerStats script tried to get a Checkpoint, but the CheckpointIndex was out of bounds when it shouldn't have been.");
+                    HasCheckpoints = false;
+                }
+            }
+
+            Debug.Log("Setting to default values");
             LastCheckpointPos = transform.position;
             ResetHeight = transform.position.y - 5f; // A little lower than the start pos.
 
-            Debug.Log("A PlayerStats component looked for a save file and found none. This is not unusual.");
+            // Debug.Log("LastCheckPoint: " + LastCheckpointPos + " ResetHeight: " + ResetHeight + " CIndex: " + CheckpointIndex);
         }
-
-
-        if (HasCheckpoints = GameManager.Instance.DoesLevelHaveCheckpoints())
-        {
-            // Rather than getting the first checkpoint, I want to have gotten the save data and worked from that
-
-            // get the first checkpoint and save it
-            NextCheckpoint = GameManager.Instance.GetCheckpoint(CheckpointIndex);
-        }
-
-        // set the reset values to be based on the starting pos
-        // These will update as we pass checkpoints
-        LastCheckpointPos = transform.position;
-        ResetHeight = transform.position.y - 5f; // A little lower than the start pos.
-
-        if (!TryGetComponent(out inventory)) Debug.Log("The PlayerStats component could not find its PlayerInventory ");
-        else HasInventory = true;
-
-        GameManager.Instance.OnSaveAndQuit += SaveAndQuit;
     }
 
     
 
     private void Update()
     {
+        Debug.Log(CheckpointIndex);
+
         CheckpointCheck();
     }
 
@@ -146,15 +167,22 @@ public class PlayerStats : MonoBehaviour
 
     private void CheckpointCheck()
     {
+
+        Debug.Log(HasCheckpoints + " " + PassedLastCheckpoint);
+
         // If we have no checkpoints in front of us.
         if (!HasCheckpoints || PassedLastCheckpoint)
         {
+            // Debug.Log("No checkpoints in front: PlayerStats");
+            ReachedEndCheck();
+
             // If we've fallen below the reset height.
             if (transform.position.y < ResetHeight)
             {
-                ReachedEndCheck();
-                return;
+                PlayerDeath();
             }
+
+            return;
         }
 
         // Otherwise, check if we have passed the next checkpoint.
@@ -183,9 +211,11 @@ public class PlayerStats : MonoBehaviour
         // Check if we've reached the next checkpoint.
         if (triggerY && triggerX)
         {
+            Debug.Log("Is this being called twice?");
+
             LastCheckpointPos = NextCheckpoint.GetRespawnPos();
             ResetHeight = triggerVals.y;
-            OnCheckpointReached?.Invoke(CheckpointIndex++);
+            OnCheckpointReached?.Invoke(++CheckpointIndex);
         }
         // In the case where we haven't reached the next checkpoint (which is almost all the time)...
         else
@@ -203,6 +233,8 @@ public class PlayerStats : MonoBehaviour
 
     private void SetNextCheckpoint(int index)
     {
+        // Debug.Log("SetNextCheck(): "+index);
+
         Checkpoint nextCheckpoint = GameManager.Instance.GetCheckpoint(index);
 
         if (nextCheckpoint != null) NextCheckpoint = nextCheckpoint;
@@ -223,20 +255,16 @@ public class PlayerStats : MonoBehaviour
 
         // Make this a string instead with json whatever
         PlayerSaveData toReturn = new PlayerSaveData(LastCheckpointPos, CheckpointIndex, GameManager.Instance.GetLevelName(), inventoryToSend, PlayerNum);
-        
+
         return JsonUtility.ToJson(toReturn);
-    }
-
-    private void LoadSaveData(string loaddata)
-    {
-        if (LoadedData) return;
-
-        // interpret the data and then apply it
     }
 
     private void SaveAndQuit()
     {
-        OnSaveAndQuitPlayer?.Invoke(BuildSaveData(), PlayerNum);
+        string json = BuildSaveData();
+        Debug.Log(json);
+
+        OnSaveAndQuitPlayer?.Invoke(json, PlayerNum);
     }
 
     public int ChangeSpeedBoost(int delta)

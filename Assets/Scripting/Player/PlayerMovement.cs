@@ -108,6 +108,8 @@ public class PlayerMovement : MonoBehaviour
         // If we never found the RigidBody2D then we can't do any movement.
         if (!UseRB) return;
 
+        // Debug.Log(IsDead);
+
         if (IsDead)
         {
             MoveTowardCheckpoint();
@@ -278,6 +280,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Death(Vector3 aCheckpoint)
     {
+        Debug.Log("death called: PlayerMovement");
+
         // Stop the player totally.
         rb.linearVelocity = new Vector3(0, 0, 0);
         rb.angularVelocity = 0;
@@ -301,14 +305,28 @@ public class PlayerMovement : MonoBehaviour
     {
         rb.transform.position = Vector2.MoveTowards(rb.transform.position, Checkpoint, DeathRespawnSpeed);
 
+        // Intention: if (rb.transform.position == Checkpoint)
+        // Reality: I need to give some tolerance as it might not properly reach destination.
+        float tolerence = 0.02f;
+        bool xCheck = rb.transform.position.x >= Checkpoint.x - tolerence 
+                        && 
+                      rb.transform.position.x <= Checkpoint.x + tolerence;
+        bool yCheck = rb.transform.position.y >= Checkpoint.y - tolerence
+                        &&
+                      rb.transform.position.y <= Checkpoint.y + tolerence;
+
+        Debug.Log(xCheck + " " + yCheck + 0);
+
         // When the player reaches the checkpoint on respawn.
         // I probably want to change this so it has some tolerance.
-        if (rb.transform.position == Checkpoint)
+        if (xCheck && yCheck)
         {
             playerCollider.enabled = true;
             rb.gravityScale = 1;
             rb.excludeLayers = 0;
             IsDead = false;
         }
+
+        Debug.Log(xCheck + " " + yCheck + 1);
     }
 }

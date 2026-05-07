@@ -51,11 +51,6 @@ public class GameManager : MonoBehaviour
             // Sorted by their checkpoint number, low to high.
             checkpoints.Sort();
         }
-
-        // Here, I want to load the save data that this level holds
-        // The data is in form persPath/CurrentLevel/#_PlayerData.json
-        // Application.persistentDataPath + "/" + CurrentLevel + "/" + playerNum + "_PlayerData.json"
-
     }
 
     private void OnEnable()
@@ -109,20 +104,7 @@ public class GameManager : MonoBehaviour
 
     private void HandlePlayerSaveData(string savedata, int playerNum)
     {
-        
-        //Debug.Log(savedata);
-        //Debug.Log(Application.persistentDataPath);
-
-        try
-        {
-            System.IO.File.WriteAllText(Application.persistentDataPath + "/" + CurrentLevel + "/" + playerNum + "_PlayerData.json", savedata);
-        }
-        catch (Exception e) 
-        {
-            Debug.Log("Tried to write to the persistent data path but failed.");
-            Debug.LogError(e);
-        }
-        
+        SaveManager.Instance.SavePlayerData(savedata, playerNum, CurrentLevel);
     }
 
     public Checkpoint GetCheckpoint(int index)
@@ -149,7 +131,7 @@ public class GameManager : MonoBehaviour
         // and then go to the main menu
 
 
-        
+        Pause();
         OnSaveAndQuit?.Invoke();
         SceneManager.Instance.BufferSceneChange("Main Menu");
 
