@@ -2,14 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerSaveData : MonoBehaviour
+public class PlayerSaveData
 {
     private Vector3 LastCheckPointPos;
     private int CheckpointNumber;
     private string LevelName;
     private List<ItemData> inventory;
+    private int PlayerNum;
 
-    public PlayerSaveData(Vector3 aLCP, int aCN, string aLN, List<ItemData> aInventory)
+    public PlayerSaveData(Vector3 aLCP, int aCN, string aLN, List<ItemData> aInventory, int aPlayerNum)
     {
         LastCheckPointPos = aLCP;
         CheckpointNumber = aCN;
@@ -20,9 +21,11 @@ public class PlayerSaveData : MonoBehaviour
         {
             inventory.Add(item);
         }
+
+        PlayerNum = aPlayerNum;
     }
 
-    public PlayerSaveData(Vector3 aLCP, int aCN, string aLN, IEnumerable<ItemData> aInventory)
+    public PlayerSaveData(Vector3 aLCP, int aCN, string aLN, IEnumerable<ItemData> aInventory, int aPlayerNum)
     {
         LastCheckPointPos = aLCP;
         CheckpointNumber = aCN;
@@ -33,6 +36,8 @@ public class PlayerSaveData : MonoBehaviour
         {
             inventory.Add(item);
         }
+
+        PlayerNum = aPlayerNum;
     }
 
     // Getter functions
@@ -54,5 +59,10 @@ public class PlayerSaveData : MonoBehaviour
         {
             yield return item;
         }
+    }
+
+    public static PlayerSaveData LoadJson(string json)
+    {
+        return JsonUtility.FromJson<PlayerSaveData>(json);
     }
 }

@@ -22,8 +22,6 @@ public class GameManager : MonoBehaviour
 
     public event Action OnSaveAndQuit;
 
-    // public event Action <PlayerStats> OnPlayerDeath;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -33,8 +31,7 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
 
-
-        // Load in the SOs of checkpoints that I'm gonna make
+        // Checkpoints as SOs
         Checkpoint[] checkpoints_arr = Resources.LoadAll<Checkpoint>("Checkpoints/" + CurrentLevel);
 
         if (checkpoints_arr.Length == 0)
@@ -51,9 +48,13 @@ public class GameManager : MonoBehaviour
                 checkpoints.Add(item);
             }
 
+            // Sorted by their checkpoint number, low to high.
             checkpoints.Sort();
-            // checkpoints.ForEach(item => { Debug.Log(item.GetLevel()); });
         }
+
+        // Here, I want to load the save data that this level holds
+        // The data is in form persPath/CurrentLevel/#_PlayerData.json
+        // Application.persistentDataPath + "/" + CurrentLevel + "/" + playerNum + "_PlayerData.json"
 
     }
 
@@ -68,20 +69,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // Load player data
+
+
         // If there is more than one player in the game, the GameManager listens to all of their heights.
         foreach (PlayerStats ps in PlayerStats.GetPlayerStats())
         {
-            //ps.OnPosChange += PosUpdate;
+            ps.OnSaveAndQuitPlayer += HandlePlayerSaveData;
             ps.OnPause += Pause;
         }
         // We listen to the addition of removal of players in run time.
         PlayerStats.OnPlayerStatsAdded += AddPlayerStats;
         PlayerStats.OnPlayerStatsRemoved += RemovePlayerStats;
-
-        // Set the last checkpoint position to be the startig point of the level.
-        //LastCheckpointPos = transform.position;
-        // Set the reset height to be below the starting position.
-        //ResetHeight = transform.position.y - 5f;
     }
 
     private void Update()
@@ -93,19 +92,37 @@ public class GameManager : MonoBehaviour
 
     private void RemovePlayerStats(PlayerStats toRemove)
     {
+        toRemove.OnSaveAndQuitPlayer += HandlePlayerSaveData;
         toRemove.OnPause -= Pause;
-        //toRemove.OnPosChange -= PosUpdate;
     }
     private void AddPlayerStats(PlayerStats toAdd)
     {
+        toAdd.OnSaveAndQuitPlayer += HandlePlayerSaveData;
         toAdd.OnPause += Pause;
-        //toAdd.OnPosChange += PosUpdate;
     }
 
     private void Pause()
     {
         IsPaused = (IsPaused) ? false : true;
         OnPauseFlipped.Invoke(IsPaused);
+    }
+
+    private void HandlePlayerSaveData(string savedata, int playerNum)
+    {
+        
+        //Debug.Log(savedata);
+        //Debug.Log(Application.persistentDataPath);
+
+        try
+        {
+            System.IO.File.WriteAllText(Application.persistentDataPath + "/" + CurrentLevel + "/" + playerNum + "_PlayerData.json", savedata);
+        }
+        catch (Exception e) 
+        {
+            Debug.Log("Tried to write to the persistent data path but failed.");
+            Debug.LogError(e);
+        }
+        
     }
 
     public Checkpoint GetCheckpoint(int index)
@@ -131,9 +148,12 @@ public class GameManager : MonoBehaviour
 
         // and then go to the main menu
 
-        
 
-        Debug.Log("SaveAndQuit() called: GameManager");
+        
+        OnSaveAndQuit?.Invoke();
+        SceneManager.Instance.BufferSceneChange("Main Menu");
+
+        // Debug.Log("SaveAndQuit() called: GameManager");
     }
 
     public void ResetLevel()

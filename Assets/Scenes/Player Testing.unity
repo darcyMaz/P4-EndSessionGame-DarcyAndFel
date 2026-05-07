@@ -3858,6 +3858,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1433211880}
   m_CullTransparentMesh: 1
+--- !u!1 &1443803587
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1443803589}
+  - component: {fileID: 1443803588}
+  m_Layer: 0
+  m_Name: SceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1443803588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1443803587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee3624b66502a644b512e0837fd13f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneManager
+--- !u!4 &1443803589
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1443803587}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.62443, y: 3.39338, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1470163888 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2762777550182273718, guid: 21469a079687a3b4a909449de282a800, type: 3}
@@ -4713,11 +4757,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1175519614514116724, guid: 21469a079687a3b4a909449de282a800, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.93
+      value: -6.75
       objectReference: {fileID: 0}
     - target: {fileID: 1175519614514116724, guid: 21469a079687a3b4a909449de282a800, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.43
+      value: -7.335
       objectReference: {fileID: 0}
     - target: {fileID: 1175519614514116724, guid: 21469a079687a3b4a909449de282a800, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4755,6 +4799,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7367487078322920311, guid: 21469a079687a3b4a909449de282a800, type: 3}
+      propertyPath: GroundedRay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7367487078322920311, guid: 21469a079687a3b4a909449de282a800, type: 3}
+      propertyPath: DeathRespawnSpeed
+      value: 0.05
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4769,8 +4821,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 619394802}
-  - {fileID: 17691765}
   - {fileID: 5643813499139816935}
+  - {fileID: 17691765}
   - {fileID: 1256602133}
   - {fileID: 255523709}
   - {fileID: 247604423}
+  - {fileID: 1443803589}
