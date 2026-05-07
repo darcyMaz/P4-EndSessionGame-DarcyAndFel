@@ -38,6 +38,22 @@ public class PlayerInventory : MonoBehaviour
         return true;
     }
 
+    public void InventoryButtonClicked(int slotIndex)
+    {
+        RemoveItemAt(slotIndex);
+    }
+
+    public void RemoveItemAt(int index)
+    {
+        if (index >= 0 && index < heldItems.Count)
+        {
+            // if item has effect??? apply it here...
+
+            heldItems.RemoveAt(index);
+            onInventoryChanged.Invoke();
+        }
+    }
+
     public bool Has(ItemData type)
         => heldItems.Contains(type);
 

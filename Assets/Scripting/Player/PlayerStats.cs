@@ -80,9 +80,8 @@ public class PlayerStats : MonoBehaviour
         {
             HasInventory = true;
             inventory.onInventoryChanged += InventoryChanged;
+            OnInventoryChange?.Invoke(inventory);
         }
-
-        
 
         GameManager.Instance.OnSaveAndQuit += SaveAndQuit;
 

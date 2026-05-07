@@ -125,7 +125,7 @@ public class GameManager : MonoBehaviour
         SaveManager.Instance.SavePlayerData(savedata, playerNum, CurrentLevel);
     }
 
-
+    
 
     public Checkpoint GetCheckpoint(int index)
     {
