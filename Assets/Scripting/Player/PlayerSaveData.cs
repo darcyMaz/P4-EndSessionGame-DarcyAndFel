@@ -10,7 +10,7 @@ public class PlayerSaveData
     [SerializeField] private Vector3 LastCheckPointPos;
     [SerializeField] private int CheckpointNumber;
     [SerializeField] private string LevelName;
-    [SerializeField] private List<string> inventory;
+    [SerializeField] private List<string> inventory = new List<string>();
     [SerializeField] private int PlayerNum;
 
     public PlayerSaveData(Vector3 aLCP, int aCN, string aLN, List<ItemData> aInventory, int aPlayerNum)
@@ -18,6 +18,8 @@ public class PlayerSaveData
         LastCheckPointPos = aLCP;
         CheckpointNumber = aCN;
         LevelName = aLN;
+
+        //Debug.Log(aInventory);
 
         // Deep copy the list.
         foreach (ItemData item in aInventory)
@@ -34,11 +36,13 @@ public class PlayerSaveData
         CheckpointNumber = aCN;
         LevelName = aLN;
 
+        Debug.Log(aInventory);
+
         // Deep copy the list.
         foreach (ItemData item in aInventory)
         {
-            //Debug.Log(item.ItemName());
-            //inventory.Add( JsonUtility.ToJson(item) );
+            // Debug.Log(item.ItemName());
+            // inventory.Add( JsonUtility.ToJson(item) );
         }
 
         PlayerNum = aPlayerNum;
@@ -73,4 +77,6 @@ public class PlayerSaveData
     {
         return JsonUtility.FromJson<PlayerSaveData>(json);
     }
+
 }
+

@@ -164,6 +164,8 @@ public class PlayerStats : MonoBehaviour
             {
                 foreach (ItemData item in psd.GetInventory())
                 {
+                    //JsonUtility.FromJson<ItemData>(item_str);
+
                     // Add the item from the save data.
                     inventory.PickUp(item);
                 }
